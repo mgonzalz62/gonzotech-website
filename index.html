@@ -3,38 +3,40 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GonzoTech.us | Command Center</title>
+    <title>GonzoTech.us | Dark Ops</title>
     <style>
         :root {
             --teal: #008080;
-            --black: #0a0a0a;
-            --dark-gray: #1a1a1a;
-            --white: #ffffff;
-            --text-dim: #bbbbbb;
+            --bg-blue: #0a0e14; /* Deep Midnight Blue */
+            --header-gray: #161b22; /* Slate Charcoal */
+            --card-gray: #1c2128;
+            --white: #adbac7; /* Soft white for less glare */
+            --bright-white: #ffffff;
         }
 
         body {
             font-family: 'Segoe UI', Roboto, sans-serif;
             margin: 0;
-            background-color: var(--white);
-            color: var(--black);
+            background-color: var(--bg-blue);
+            color: var(--white);
         }
 
         /* Nav & Tabs */
         header {
-            background-color: var(--black);
+            background-color: var(--header-gray);
             padding: 5px 0;
             position: sticky;
             top: 0;
             z-index: 1000;
             border-bottom: 2px solid var(--teal);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.5);
         }
 
         nav {
             display: flex;
             overflow-x: auto;
             white-space: nowrap;
-            scrollbar-width: none; /* Firefox */
+            scrollbar-width: none;
             padding: 0 10px;
         }
 
@@ -43,7 +45,7 @@
         .tab-btn {
             background: none;
             border: none;
-            color: var(--text-dim);
+            color: #6e7681;
             font-size: 0.9rem;
             padding: 15px 20px;
             cursor: pointer;
@@ -51,7 +53,10 @@
             font-weight: bold;
             letter-spacing: 1px;
             border-bottom: 3px solid transparent;
+            transition: 0.3s;
         }
+
+        .tab-btn:hover { color: var(--teal); }
 
         .tab-btn.active {
             color: var(--teal);
@@ -60,9 +65,9 @@
 
         /* Dashboard & Widgets */
         .dashboard {
-            background: var(--black);
-            color: white;
+            background: rgba(0,0,0,0.3);
             padding: 20px;
+            border-bottom: 1px solid #30363d;
         }
 
         .widget-grid {
@@ -74,10 +79,10 @@
         }
 
         .widget {
-            background: var(--dark-gray);
+            background: var(--card-gray);
             padding: 15px;
-            border-radius: 5px;
-            border: 1px solid #333;
+            border-radius: 8px;
+            border: 1px solid #30363d;
             text-align: center;
         }
 
@@ -88,23 +93,16 @@
             max-width: 1200px;
             margin: 20px auto 0;
             background: #000;
-            border: 1px solid #333;
+            border: 1px solid #30363d;
             border-radius: 5px;
             padding: 15px;
             font-family: 'Courier New', Courier, monospace;
             font-size: 0.85rem;
         }
 
-        .log-header {
-            color: var(--teal);
-            border-bottom: 1px solid #222;
-            margin-bottom: 10px;
-            padding-bottom: 5px;
-            font-weight: bold;
-        }
-
-        .log-entry { margin: 5px 0; color: #00ff41; } /* Matrix green for logs */
-        .log-time { color: #888; margin-right: 10px; }
+        .log-header { color: var(--teal); border-bottom: 1px solid #222; margin-bottom: 10px; padding-bottom: 5px; font-weight: bold; }
+        .log-entry { margin: 5px 0; color: #00ff41; } 
+        .log-time { color: #58a6ff; margin-right: 10px; }
         
         .cursor {
             display: inline-block;
@@ -118,24 +116,31 @@
         @keyframes blink { 50% { opacity: 0; } }
 
         /* General Content */
-        .content-section { display: none; padding: 30px 20px; max-width: 1000px; margin: auto; }
+        .content-section { display: none; padding: 40px 20px; max-width: 1000px; margin: auto; }
         .content-section.active { display: block; animation: fadeIn 0.3s ease-in; }
 
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+
+        h1, h2, h3 { color: var(--bright-white); }
 
         .card {
-            background: #f9f9f9;
+            background: var(--card-gray);
             padding: 20px;
             border-left: 5px solid var(--teal);
             margin-bottom: 20px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            border-radius: 0 8px 8px 0;
+            border-top: 1px solid #30363d;
+            border-right: 1px solid #30363d;
+            border-bottom: 1px solid #30363d;
         }
 
         input, textarea, button {
-            width: 100%; padding: 12px; margin: 10px 0; border: 1px solid #ddd; border-radius: 4px; box-sizing: border-box;
+            width: 100%; padding: 12px; margin: 10px 0; border: 1px solid #30363d; 
+            border-radius: 6px; box-sizing: border-box; background: #0d1117; color: white;
         }
 
-        button { background: var(--teal); color: white; border: none; font-weight: bold; cursor: pointer; }
+        button { background: var(--teal); color: white; border: none; font-weight: bold; cursor: pointer; transition: 0.2s; }
+        button:hover { filter: brightness(1.2); }
 
         @media (min-width: 768px) { nav { justify-content: center; } }
     </style>
@@ -156,66 +161,63 @@
     <div class="dashboard">
         <div class="widget-grid">
             <div class="widget">
-                <div style="font-size: 0.7rem; color: var(--teal); letter-spacing: 2px;">LOCAL TIME</div>
+                <div style="font-size: 0.7rem; color: var(--teal); letter-spacing: 2px;">SYSTEM TIME</div>
                 <div id="clock">00:00:00</div>
-                <div id="date" style="color: #666; font-size: 0.8rem;">February 20, 2026</div>
+                <div id="date" style="color: #6e7681; font-size: 0.8rem;">February 20, 2026</div>
             </div>
             <div class="widget">
-                <a class="weatherwidget-io" href="https://forecast7.com/en/40film74_-74film01/new-york/" data-label_1="HQ STATUS" data-label_2="WEATHER" data-theme="pure" data-basecolor="#1a1a1a" data-accent="#008080" data-textcolor="#ffffff" >WEATHER</a>
+                <a class="weatherwidget-io" href="https://forecast7.com/en/40film74_-74film01/new-york/" data-label_1="HQ ENVIRONMENT" data-label_2="WEATHER" data-theme="pure" data-basecolor="rgba(28, 33, 40, 0)" data-accent="#008080" data-textcolor="#adbac7" >WEATHER</a>
             </div>
         </div>
 
         <div class="system-log">
-            <div class="log-header">SYSTEM_LOG_v2.0</div>
-            <div class="log-entry"><span class="log-time">[08:45]</span> Initializing GonzoTech core...</div>
-            <div class="log-entry"><span class="log-time">[09:12]</span> Home Automation Node: ONLINE</div>
-            <div class="log-entry"><span class="log-time">[14:30]</span> New Project: "Smart Mirror" uploaded to Projects tab.</div>
-            <div class="log-entry"><span class="log-time">[NOW]</span> System monitoring active <span class="cursor"></span></div>
+            <div class="log-header">GONZOTECH_OS_TERMINAL</div>
+            <div class="log-entry"><span class="log-time">[08:45]</span> Kernel Loaded Successfully.</div>
+            <div class="log-entry"><span class="log-time">[09:12]</span> Dark Mode Protocol: ENABLED.</div>
+            <div class="log-entry"><span class="log-time">[14:30]</span> New update synced from GonzoTech.us repo.</div>
+            <div class="log-entry"><span class="log-time">[LIVE]</span> Monitoring packets... <span class="cursor"></span></div>
         </div>
     </div>
 
-    <h1>Welcome, Admin.</h1>
-    <p>This is the central operating system for <strong>GonzoTech.us</strong>. Navigate through the tabs above to manage deployments, check hardware status, or request technical support.</p>
+    <h1>Welcome to the Command Center</h1>
+    <p>GonzoTech.us is now operating in low-light mode for maximum efficiency.</p>
 </div>
 
 <div id="projects" class="content-section">
-    <h2>Project Repository</h2>
-    <div class="card"><h3>Hydro-Cooling Pi Array</h3><p>Status: Completed / Open Source</p></div>
+    <h2>Project Repo</h2>
+    <div class="card"><h3>Home Assistant Dashboard</h3><p>Custom YAML configuration for a 10-inch wall tablet.</p></div>
 </div>
 
 <div id="automation" class="content-section">
     <h2>Home Automation</h2>
-    <div class="card"><h3>Master Controller</h3><p>Server: Raspberry Pi 5 | OS: Home Assistant</p></div>
+    <div class="card"><h3>Zigbee Network</h3><p>Status: Healthy | 42 Devices Paired</p></div>
 </div>
 
 <div id="support" class="content-section">
     <h2>Technical Support</h2>
-    <p>Submit a ticket or view documentation.</p>
+    <p>Log a ticket into the GonzoTech queue.</p>
 </div>
 
 <div id="contact" class="content-section">
-    <h2>Contact Me</h2>
+    <h2>Secure Contact</h2>
     <form>
-        <input type="text" placeholder="Subject">
-        <textarea rows="4" placeholder="Message"></textarea>
-        <button type="button">SEND ENCRYPTED</button>
+        <input type="text" placeholder="Inquiry Subject">
+        <textarea rows="4" placeholder="Encrypted Message..."></textarea>
+        <button type="button">TRANSMIT DATA</button>
     </form>
 </div>
 
 <script>
-    // Tab Management
     function showTab(id) {
         const sections = document.querySelectorAll('.content-section');
         const buttons = document.querySelectorAll('.tab-btn');
-        
         sections.forEach(s => s.classList.remove('active'));
         buttons.forEach(b => b.classList.remove('active'));
-
         document.getElementById(id).classList.add('active');
         event.currentTarget.classList.add('active');
+        window.scrollTo(0, 0);
     }
 
-    // Live Clock
     function tick() {
         const now = new Date();
         document.getElementById('clock').textContent = now.toLocaleTimeString('en-US', { hour12: false });
@@ -224,7 +226,6 @@
     setInterval(tick, 1000);
     tick();
 
-    // Weather Script
     !function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src='https://weatherwidget.io/js/widget.min.js';fjs.parentNode.insertBefore(js,fjs);}}(document,'script','weatherwidget-io-js');
 </script>
 
