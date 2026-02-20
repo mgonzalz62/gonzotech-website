@@ -3,17 +3,21 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GonzoTech.us | Tech Hub</title>
+    <title>GonzoTech.us | Command Center</title>
+    
     <style>
+        /* --- COLOR & VARIABLE CONFIGURATION --- */
         :root {
-            --teal: #008080;
-            --bg-blue: #0a0e14;
-            --header-gray: #161b22;
-            --card-gray: #1c2128;
-            --white: #adbac7;
-            --bright-white: #ffffff;
+            --teal: #008080;        /* Primary Brand Color */
+            --bg-blue: #0a0e14;     /* Deep Midnight Background */
+            --header-gray: #161b22; /* Slate Gray for Navigation */
+            --card-gray: #1c2128;   /* Slightly lighter gray for content boxes */
+            --white: #adbac7;       /* Soft white for body text */
+            --bright-white: #ffffff;/* Highlights and Headings */
+            --log-green: #00ff41;   /* "Matrix" style terminal text */
         }
 
+        /* --- CORE PAGE STYLING --- */
         body {
             font-family: 'Segoe UI', Roboto, sans-serif;
             margin: 0;
@@ -22,6 +26,9 @@
             line-height: 1.6;
         }
 
+        /* --- NAVIGATION TAB BAR --- 
+           Sticky header that stays at the top. 
+           'overflow-x: auto' allows swiping on mobile devices. */
         header {
             background-color: var(--header-gray);
             padding: 5px 0;
@@ -29,17 +36,18 @@
             top: 0;
             z-index: 1000;
             border-bottom: 2px solid var(--teal);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.5);
         }
 
         nav {
             display: flex;
             overflow-x: auto;
             white-space: nowrap;
-            scrollbar-width: none;
+            scrollbar-width: none; /* Hides scrollbar on Firefox */
             padding: 0 10px;
         }
 
-        nav::-webkit-scrollbar { display: none; }
+        nav::-webkit-scrollbar { display: none; } /* Hides scrollbar on Chrome/Safari */
 
         .tab-btn {
             background: none;
@@ -60,7 +68,8 @@
             border-bottom: 3px solid var(--teal);
         }
 
-        /* Widgets */
+        /* --- DASHBOARD & WIDGETS --- 
+           The grid system handles mobile-to-desktop transitions automatically. */
         .dashboard {
             background: rgba(0,0,0,0.2);
             padding: 20px;
@@ -68,7 +77,7 @@
 
         .widget-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
             gap: 15px;
             max-width: 1200px;
             margin: auto;
@@ -80,10 +89,17 @@
             border-radius: 8px;
             border: 1px solid #30363d;
             text-align: center;
+            min-height: 100px;
         }
 
-        #clock { font-size: 2.2rem; font-family: monospace; color: var(--teal); }
+        #clock { 
+            font-size: 2.2rem; 
+            font-family: 'Courier New', monospace; 
+            color: var(--teal); 
+        }
 
+        /* --- SYSTEM LOG TERMINAL --- 
+           Designed to look like a live server console. */
         .system-log {
             max-width: 1200px;
             margin: 20px auto 0;
@@ -95,31 +111,55 @@
             font-size: 0.85rem;
         }
 
-        .log-header { color: var(--teal); border-bottom: 1px solid #222; margin-bottom: 10px; padding-bottom: 5px; }
-        .log-entry { margin: 5px 0; color: #00ff41; }
-        .cursor { display: inline-block; width: 8px; height: 15px; background: var(--teal); animation: blink 1s infinite; vertical-align: middle; }
+        .log-header { 
+            color: var(--teal); 
+            border-bottom: 1px solid #222; 
+            margin-bottom: 10px; 
+            padding-bottom: 5px; 
+            font-weight: bold;
+        }
+
+        .log-entry { margin: 5px 0; color: var(--log-green); }
+
+        /* The flashing cursor animation */
+        .cursor { 
+            display: inline-block; 
+            width: 8px; 
+            height: 15px; 
+            background: var(--teal); 
+            animation: blink 1s infinite; 
+            vertical-align: middle; 
+        }
         @keyframes blink { 50% { opacity: 0; } }
 
-        /* Main Content */
-        .content-section { display: none; padding: 40px 20px; max-width: 1000px; margin: auto; }
-        .content-section.active { display: block; animation: fadeIn 0.3s ease-in; }
+        /* --- CONTENT SECTIONS --- 
+           'display: none' hides sections until the JavaScript 'active' class is applied. */
+        .content-section { 
+            display: none; 
+            padding: 40px 20px; 
+            max-width: 1000px; 
+            margin: auto; 
+        }
+        
+        .content-section.active { 
+            display: block; 
+            animation: fadeIn 0.3s ease-in; 
+        }
 
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
         h1, h2 { color: var(--bright-white); }
 
+        /* Generic Card Styling for Placeholders */
         .placeholder-card {
             background: var(--card-gray);
             padding: 30px;
-            border-left: 5px solid #30363d; /* Neutral until active */
+            border-left: 5px solid #30363d;
             margin-bottom: 20px;
             border-radius: 4px;
             text-align: center;
-            opacity: 0.8;
         }
 
-        .placeholder-card h3 { color: var(--teal); margin-top: 0; }
-        
         .status-badge {
             display: inline-block;
             padding: 4px 12px;
@@ -129,15 +169,24 @@
             color: #8b949e;
             border: 1px solid #30363d;
             margin-bottom: 10px;
+            text-transform: uppercase;
         }
 
-        /* Forms */
+        /* --- FORMS & BUTTONS --- */
         input, textarea, button {
             width: 100%; padding: 12px; margin: 10px 0; border: 1px solid #30363d; 
             border-radius: 6px; box-sizing: border-box; background: #0d1117; color: white;
         }
 
-        button { background: var(--teal); color: white; border: none; font-weight: bold; cursor: pointer; }
+        button { 
+            background: var(--teal); 
+            color: white; 
+            border: none; 
+            font-weight: bold; 
+            cursor: pointer; 
+            transition: 0.3s;
+        }
+        button:hover { filter: brightness(1.2); }
 
         @media (min-width: 768px) { nav { justify-content: center; } }
     </style>
@@ -150,93 +199,4 @@
         <button class="tab-btn" onclick="showTab('projects')">Projects</button>
         <button class="tab-btn" onclick="showTab('automation')">Automation</button>
         <button class="tab-btn" onclick="showTab('support')">Support</button>
-        <button class="tab-btn" onclick="showTab('contact')">Contact</button>
-    </nav>
-</header>
-
-<div id="home" class="content-section active">
-    <div class="dashboard">
-        <div class="widget-grid">
-            <div class="widget">
-                <div style="font-size: 0.7rem; color: var(--teal); letter-spacing: 2px;">NODE CLOCK</div>
-                <div id="clock">00:00:00</div>
-                <div id="date" style="color: #6e7681; font-size: 0.8rem;">---</div>
-            </div>
-            <div class="widget">
-                <a class="weatherwidget-io" href="https://forecast7.com/en/41 film39_-81 film81/strongsville/" data-label_1="LOCAL ENVIRONMENT" data-label_2="WEATHER" data-theme="pure" data-basecolor="rgba(28, 33, 40, 0)" data-accent="#008080" data-textcolor="#adbac7" >WEATHER</a>
-            </div>
-        </div>
-
-        <div class="system-log">
-            <div class="log-header">GONZOTECH_TERMINAL</div>
-            <div class="log-entry">> System initialized. Environment: Dark Mode.</div>
-            <div class="log-entry">> Awaiting project deployment...</div>
-            <div class="log-entry">> Connection secure. <span class="cursor"></span></div>
-        </div>
-    </div>
-
-    <h1>Site Overview</h1>
-    <p>Welcome to GonzoTech.us. This portal serves as the primary interface for technical projects and automated system management.</p>
-</div>
-
-<div id="projects" class="content-section">
-    <h2>Project Repository</h2>
-    <div class="placeholder-card">
-        <div class="status-badge">AWAITING DEPLOYMENT</div>
-        <h3>Project Alpha</h3>
-        <p>Technical documentation and project details will be published upon completion of the initial build phase.</p>
-    </div>
-    <div class="placeholder-card">
-        <div class="status-badge">IN PLANNING</div>
-        <h3>Project Beta</h3>
-        <p>Details for this upcoming project are currently classified.</p>
-    </div>
-</div>
-
-<div id="automation" class="content-section">
-    <h2>Automation Systems</h2>
-    <div class="placeholder-card">
-        <div class="status-badge">OFFLINE</div>
-        <h3>Primary Node Config</h3>
-        <p>Configuration settings and system maps for local home automation will be displayed here once the network is synchronized.</p>
-    </div>
-</div>
-
-<div id="support" class="content-section">
-    <h2>Technical Support</h2>
-    <div class="placeholder-card">
-        <h3>Knowledge Base</h3>
-        <p>Documentation and FAQ sections are currently under construction.</p>
-    </div>
-</div>
-
-<div id="contact" class="content-section">
-    <h2>Communication Portal</h2>
-    <form>
-        <input type="text" placeholder="Subject/ID">
-        <textarea rows="4" placeholder="Message Details..."></textarea>
-        <button type="button">TRANSMIT</button>
-    </form>
-</div>
-
-<script>
-    function showTab(id) {
-        document.querySelectorAll('.content-section').forEach(s => s.classList.remove('active'));
-        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-        document.getElementById(id).classList.add('active');
-        event.currentTarget.classList.add('active');
-        window.scrollTo(0, 0);
-    }
-
-    function tick() {
-        const now = new Date();
-        document.getElementById('clock').textContent = now.toLocaleTimeString('en-US', { hour12: false });
-        document.getElementById('date').textContent = now.toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
-    }
-    setInterval(tick, 1000); tick();
-
-    !function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src='https://weatherwidget.io/js/widget.min.js';fjs.parentNode.insertBefore(js,fjs);}}(document,'script','weatherwidget-io-js');
-</script>
-
-</body>
-</html>
+        <button class="tab-btn" onclick="showTab('contact')">
