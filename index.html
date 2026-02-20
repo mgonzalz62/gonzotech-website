@@ -22,35 +22,57 @@
     <div class="dashboard">
         <div class="widget-grid">
             <div class="widget">
-                <div style="font-size: 0.7rem; color: var(--teal); letter-spacing: 2px;">NODE CLOCK</div>
+                <div class="widget-label">SYSTEM TIME</div>
                 <div id="clock">00:00:00</div>
                 <div id="date" style="color: #6e7681; font-size: 0.8rem;">---</div>
             </div>
+            
             <div class="widget">
-                <div style="font-size: 0.7rem; color: var(--teal); letter-spacing: 2px; margin-bottom: 10px;">SESSION ACTIVE</div>
-                <div id="session-timer" style="font-size: 2rem; font-family: monospace; color: var(--teal);">00:00</div>
+                <div class="widget-label">SESSION ACTIVE</div>
+                <div id="session-timer">00:00</div>
                 <div style="font-size: 0.7rem; color: #6e7681;">TIME SINCE CONNECTION</div>
             </div>
-                    <div>UPLINK: <span style="color: var(--teal);">SECURE</span></div>
+
+            <div class="widget">
+                <div class="widget-label">ENVIRONMENT SPECS</div>
+                <div class="spec-list">
+                    <div>HOST: <span>Cloudflare Pages</span></div>
+                    <div>STACK: <span>Vanilla JS / JSON</span></div>
+                    <div>UPLINK: <span style="color: var(--log-green);">SECURE</span></div>
                 </div>
             </div>
         </div>
+
         <div class="system-log">
             <div class="log-header">GONZOTECH_TERMINAL</div>
-            <div id="log-container">Loading system logs...</div>
+            <div id="log-container">Initializing data fetch...</div>
         </div>
     </div>
-    <h1>Site Overview</h1>
-    <p>GonzoTech.us active. Select a node from the navigation to begin.</p>
+    
+    <h1>GonzoTech Command Center</h1>
+    <p>Welcome. This portal manages the documentation and status of custom engineering projects and automation nodes.</p>
 </div>
 
-<div id="projects" class="content-section"><div id="project-list"></div></div>
-<div id="automation" class="content-section"><div id="automation-list"></div></div>
-<div id="support" class="content-section"><h2>Support</h2><div class="placeholder-card">Knowledge base offline.</div></div>
+<div id="projects" class="content-section">
+    <div id="project-list"></div>
+</div>
+
+<div id="automation" class="content-section">
+    <div id="automation-list"></div>
+</div>
+
+<div id="support" class="content-section">
+    <h2>Technical Support</h2>
+    <div id="support-list"></div>
+</div>
 
 <div id="contact" class="content-section">
-    <h2>Communication</h2>
-    <form><input type="text" placeholder="Subject"><textarea rows="4" placeholder="Message"></textarea><button type="button">TRANSMIT</button></form>
+    <h2>Secure Communication</h2>
+    <form id="contact-form">
+        <input type="text" placeholder="Subject / Inquiry ID" required>
+        <textarea rows="5" placeholder="Enter message details..." required></textarea>
+        <button type="submit">TRANSMIT DATA</button>
+    </form>
 </div>
 
 <script src="script.js"></script>
