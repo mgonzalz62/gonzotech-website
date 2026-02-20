@@ -1,49 +1,232 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>GonzoTech</title>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <style>
-    body {
-      margin: 0;
-      font-family: Arial, sans-serif;
-      background: #0f172a;
-      color: white;
-      text-align: center;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-    }
-    .container {
-      max-width: 600px;
-    }
-    h1 {
-      font-size: 3rem;
-      margin-bottom: 10px;
-    }
-    p {
-      font-size: 1.2rem;
-      color: #94a3b8;
-    }
-    a {
-      color: #38bdf8;
-      text-decoration: none;
-      margin: 10px;
-      display: inline-block;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GonzoTech.us | Command Center</title>
+    <style>
+        :root {
+            --teal: #008080;
+            --black: #0a0a0a;
+            --dark-gray: #1a1a1a;
+            --white: #ffffff;
+            --text-dim: #bbbbbb;
+        }
+
+        body {
+            font-family: 'Segoe UI', Roboto, sans-serif;
+            margin: 0;
+            background-color: var(--white);
+            color: var(--black);
+        }
+
+        /* Nav & Tabs */
+        header {
+            background-color: var(--black);
+            padding: 5px 0;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            border-bottom: 2px solid var(--teal);
+        }
+
+        nav {
+            display: flex;
+            overflow-x: auto;
+            white-space: nowrap;
+            scrollbar-width: none; /* Firefox */
+            padding: 0 10px;
+        }
+
+        nav::-webkit-scrollbar { display: none; }
+
+        .tab-btn {
+            background: none;
+            border: none;
+            color: var(--text-dim);
+            font-size: 0.9rem;
+            padding: 15px 20px;
+            cursor: pointer;
+            text-transform: uppercase;
+            font-weight: bold;
+            letter-spacing: 1px;
+            border-bottom: 3px solid transparent;
+        }
+
+        .tab-btn.active {
+            color: var(--teal);
+            border-bottom: 3px solid var(--teal);
+        }
+
+        /* Dashboard & Widgets */
+        .dashboard {
+            background: var(--black);
+            color: white;
+            padding: 20px;
+        }
+
+        .widget-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+            max-width: 1200px;
+            margin: auto;
+        }
+
+        .widget {
+            background: var(--dark-gray);
+            padding: 15px;
+            border-radius: 5px;
+            border: 1px solid #333;
+            text-align: center;
+        }
+
+        #clock { font-size: 2.2rem; font-family: monospace; color: var(--teal); }
+
+        /* System Log Section */
+        .system-log {
+            max-width: 1200px;
+            margin: 20px auto 0;
+            background: #000;
+            border: 1px solid #333;
+            border-radius: 5px;
+            padding: 15px;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 0.85rem;
+        }
+
+        .log-header {
+            color: var(--teal);
+            border-bottom: 1px solid #222;
+            margin-bottom: 10px;
+            padding-bottom: 5px;
+            font-weight: bold;
+        }
+
+        .log-entry { margin: 5px 0; color: #00ff41; } /* Matrix green for logs */
+        .log-time { color: #888; margin-right: 10px; }
+        
+        .cursor {
+            display: inline-block;
+            width: 8px;
+            height: 15px;
+            background: var(--teal);
+            animation: blink 1s infinite;
+            vertical-align: middle;
+        }
+
+        @keyframes blink { 50% { opacity: 0; } }
+
+        /* General Content */
+        .content-section { display: none; padding: 30px 20px; max-width: 1000px; margin: auto; }
+        .content-section.active { display: block; animation: fadeIn 0.3s ease-in; }
+
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+        .card {
+            background: #f9f9f9;
+            padding: 20px;
+            border-left: 5px solid var(--teal);
+            margin-bottom: 20px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+
+        input, textarea, button {
+            width: 100%; padding: 12px; margin: 10px 0; border: 1px solid #ddd; border-radius: 4px; box-sizing: border-box;
+        }
+
+        button { background: var(--teal); color: white; border: none; font-weight: bold; cursor: pointer; }
+
+        @media (min-width: 768px) { nav { justify-content: center; } }
+    </style>
 </head>
 <body>
-  <div class="container">
-    <h1>GonzoTech</h1>
-    <p>Homelab • Automation • Projects</p>
-    <div>
-      <a href="#">Projects</a>
-      <a href="#">GitHub</a>
-      <a href="#">Contact</a>
+
+<header>
+    <nav>
+        <button class="tab-btn active" onclick="showTab('home')">Home</button>
+        <button class="tab-btn" onclick="showTab('projects')">Projects</button>
+        <button class="tab-btn" onclick="showTab('automation')">Automation</button>
+        <button class="tab-btn" onclick="showTab('support')">Support</button>
+        <button class="tab-btn" onclick="showTab('contact')">Contact</button>
+    </nav>
+</header>
+
+<div id="home" class="content-section active">
+    <div class="dashboard">
+        <div class="widget-grid">
+            <div class="widget">
+                <div style="font-size: 0.7rem; color: var(--teal); letter-spacing: 2px;">LOCAL TIME</div>
+                <div id="clock">00:00:00</div>
+                <div id="date" style="color: #666; font-size: 0.8rem;">February 20, 2026</div>
+            </div>
+            <div class="widget">
+                <a class="weatherwidget-io" href="https://forecast7.com/en/40film74_-74film01/new-york/" data-label_1="HQ STATUS" data-label_2="WEATHER" data-theme="pure" data-basecolor="#1a1a1a" data-accent="#008080" data-textcolor="#ffffff" >WEATHER</a>
+            </div>
+        </div>
+
+        <div class="system-log">
+            <div class="log-header">SYSTEM_LOG_v2.0</div>
+            <div class="log-entry"><span class="log-time">[08:45]</span> Initializing GonzoTech core...</div>
+            <div class="log-entry"><span class="log-time">[09:12]</span> Home Automation Node: ONLINE</div>
+            <div class="log-entry"><span class="log-time">[14:30]</span> New Project: "Smart Mirror" uploaded to Projects tab.</div>
+            <div class="log-entry"><span class="log-time">[NOW]</span> System monitoring active <span class="cursor"></span></div>
+        </div>
     </div>
-  </div>
+
+    <h1>Welcome, Admin.</h1>
+    <p>This is the central operating system for <strong>GonzoTech.us</strong>. Navigate through the tabs above to manage deployments, check hardware status, or request technical support.</p>
+</div>
+
+<div id="projects" class="content-section">
+    <h2>Project Repository</h2>
+    <div class="card"><h3>Hydro-Cooling Pi Array</h3><p>Status: Completed / Open Source</p></div>
+</div>
+
+<div id="automation" class="content-section">
+    <h2>Home Automation</h2>
+    <div class="card"><h3>Master Controller</h3><p>Server: Raspberry Pi 5 | OS: Home Assistant</p></div>
+</div>
+
+<div id="support" class="content-section">
+    <h2>Technical Support</h2>
+    <p>Submit a ticket or view documentation.</p>
+</div>
+
+<div id="contact" class="content-section">
+    <h2>Contact Me</h2>
+    <form>
+        <input type="text" placeholder="Subject">
+        <textarea rows="4" placeholder="Message"></textarea>
+        <button type="button">SEND ENCRYPTED</button>
+    </form>
+</div>
+
+<script>
+    // Tab Management
+    function showTab(id) {
+        const sections = document.querySelectorAll('.content-section');
+        const buttons = document.querySelectorAll('.tab-btn');
+        
+        sections.forEach(s => s.classList.remove('active'));
+        buttons.forEach(b => b.classList.remove('active'));
+
+        document.getElementById(id).classList.add('active');
+        event.currentTarget.classList.add('active');
+    }
+
+    // Live Clock
+    function tick() {
+        const now = new Date();
+        document.getElementById('clock').textContent = now.toLocaleTimeString('en-US', { hour12: false });
+        document.getElementById('date').textContent = now.toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+    }
+    setInterval(tick, 1000);
+    tick();
+
+    // Weather Script
+    !function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src='https://weatherwidget.io/js/widget.min.js';fjs.parentNode.insertBefore(js,fjs);}}(document,'script','weatherwidget-io-js');
+</script>
+
 </body>
 </html>
