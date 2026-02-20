@@ -1,21 +1,25 @@
+/* --- 1. THEME VARIABLES --- */
 :root {
-    --teal: #008080;
-    --bg-blue: #0a0e14;
-    --header-gray: #161b22;
-    --card-gray: #1c2128;
-    --white: #adbac7;
-    --bright-white: #ffffff;
-    --log-green: #00ff41;
+    --teal: #008080;        /* Primary accent color */
+    --bg-blue: #0a0e14;     /* Main background: Midnight Blue */
+    --header-gray: #161b22; /* Navigation background: Slate Gray */
+    --card-gray: #1c2128;   /* Component background: Dark Gray */
+    --white: #adbac7;       /* Primary text color (soft white) */
+    --bright-white: #ffffff;/* Heading color */
+    --log-green: #00ff41;   /* Terminal text color */
 }
 
+/* --- 2. CORE RESET & BODY --- */
 body {
-    font-family: 'Segoe UI', Roboto, sans-serif;
+    font-family: 'Segoe UI', Roboto, -apple-system, sans-serif;
     margin: 0;
     background-color: var(--bg-blue);
     color: var(--white);
     line-height: 1.6;
+    overflow-x: hidden; /* Prevents unwanted horizontal scrolling */
 }
 
+/* --- 3. NAVIGATION (STICKY TABS) --- */
 header {
     background-color: var(--header-gray);
     padding: 5px 0;
@@ -23,16 +27,17 @@ header {
     top: 0;
     z-index: 1000;
     border-bottom: 2px solid var(--teal);
+    box-shadow: 0 4px 10px rgba(0,0,0,0.5);
 }
 
 nav {
     display: flex;
-    overflow-x: auto;
-    scrollbar-width: none;
+    overflow-x: auto; /* Enable swipe for tabs on mobile */
+    scrollbar-width: none; /* Firefox: hide scrollbar */
     padding: 0 10px;
 }
 
-nav::-webkit-scrollbar { display: none; }
+nav::-webkit-scrollbar { display: none; } /* Chrome/Safari: hide scrollbar */
 
 .tab-btn {
     background: none;
@@ -43,7 +48,13 @@ nav::-webkit-scrollbar { display: none; }
     cursor: pointer;
     text-transform: uppercase;
     font-weight: bold;
+    letter-spacing: 1px;
     border-bottom: 3px solid transparent;
+    transition: color 0.3s, border-bottom 0.3s;
+}
+
+.tab-btn:hover {
+    color: var(--white);
 }
 
 .tab-btn.active {
@@ -51,13 +62,63 @@ nav::-webkit-scrollbar { display: none; }
     border-bottom: 3px solid var(--teal);
 }
 
-.dashboard { background: rgba(0,0,0,0.2); padding: 20px; }
-.widget-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 15px; max-width: 1200px; margin: auto; }
-.widget { background: var(--card-gray); padding: 15px; border-radius: 8px; border: 1px solid #30363d; text-align: center; }
+/* --- 4. DASHBOARD & WIDGETS --- */
+.dashboard {
+    background: rgba(0, 0, 0, 0.2);
+    padding: 20px;
+    border-bottom: 1px solid #30363d;
+}
 
-#clock { font-size: 2.2rem; font-family: monospace; color: var(--teal); }
-.log-time { color: #58a6ff; margin-right: 8px; }
+.widget-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 15px;
+    max-width: 1200px;
+    margin: auto;
+}
 
+.widget {
+    background: var(--card-gray);
+    padding: 20px;
+    border-radius: 8px;
+    border: 1px solid #30363d;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.widget-label {
+    font-size: 0.7rem;
+    color: var(--teal);
+    letter-spacing: 2px;
+    margin-bottom: 8px;
+    font-weight: bold;
+}
+
+#clock, #session-timer {
+    font-size: 2.2rem;
+    font-family: 'Courier New', monospace;
+    color: var(--teal);
+}
+
+.spec-list {
+    text-align: left;
+    font-family: monospace;
+    font-size: 0.8rem;
+    display: inline-block;
+    margin: 0 auto;
+}
+
+.spec-list div {
+    margin: 2px 0;
+}
+
+.spec-list span {
+    color: var(--teal);
+}
+
+/* --- 5. SYSTEM LOG (TERMINAL) --- */
 .system-log {
     max-width: 1200px;
     margin: 20px auto 0;
@@ -65,22 +126,128 @@ nav::-webkit-scrollbar { display: none; }
     border: 1px solid #30363d;
     border-radius: 5px;
     padding: 15px;
-    font-family: 'Courier New', monospace;
+    font-family: 'Courier New', Courier, monospace;
     font-size: 0.85rem;
+    box-shadow: inset 0 0 10px rgba(0, 255, 65, 0.1);
 }
 
-.log-header { color: var(--teal); border-bottom: 1px solid #222; margin-bottom: 10px; font-weight: bold; }
-.log-entry { margin: 5px 0; color: var(--log-green); }
-.cursor { display: inline-block; width: 8px; height: 15px; background: var(--teal); animation: blink 1s infinite; vertical-align: middle; }
+.log-header {
+    color: var(--teal);
+    border-bottom: 1px solid #222;
+    margin-bottom: 10px;
+    padding-bottom: 5px;
+    font-weight: bold;
+}
+
+.log-entry {
+    margin: 5px 0;
+    color: var(--log-green);
+}
+
+.log-time {
+    color: #58a6ff;
+    margin-right: 10px;
+}
+
+/* Blinking cursor animation */
+.cursor {
+    display: inline-block;
+    width: 8px;
+    height: 15px;
+    background: var(--teal);
+    animation: blink 1s infinite;
+    vertical-align: middle;
+}
 @keyframes blink { 50% { opacity: 0; } }
 
-.content-section { display: none; padding: 40px 20px; max-width: 1000px; margin: auto; }
-.content-section.active { display: block; }
+/* --- 6. MAIN CONTENT SECTIONS --- */
+.content-section {
+    display: none; /* JS handles visibility */
+    padding: 40px 20px;
+    max-width: 1000px;
+    margin: auto;
+    animation: fadeIn 0.4s ease-in;
+}
 
-.placeholder-card { background: var(--card-gray); padding: 30px; border-left: 5px solid #30363d; margin-bottom: 20px; border-radius: 4px; text-align: center; }
-.status-badge { display: inline-block; padding: 4px 12px; border-radius: 12px; font-size: 0.75rem; background: #21262d; color: #8b949e; border: 1px solid #30363d; margin-bottom: 10px; }
+.content-section.active {
+    display: block;
+}
 
-input, textarea, button { width: 100%; padding: 12px; margin: 10px 0; border: 1px solid #30363d; border-radius: 6px; background: #0d1117; color: white; }
-button { background: var(--teal); font-weight: bold; cursor: pointer; }
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(5px); }
+    to { opacity: 1; transform: translateY(0); }
+}
 
-@media (min-width: 768px) { nav { justify-content: center; } }
+h1, h2, h3 {
+    color: var(--bright-white);
+}
+
+/* Project/Automation Cards */
+.placeholder-card {
+    background: var(--card-gray);
+    padding: 30px;
+    border-left: 5px solid var(--teal);
+    margin-bottom: 20px;
+    border-radius: 0 8px 8px 0;
+    border-top: 1px solid #30363d;
+    border-right: 1px solid #30363d;
+    border-bottom: 1px solid #30363d;
+}
+
+.status-badge {
+    display: inline-block;
+    padding: 4px 12px;
+    border-radius: 12px;
+    font-size: 0.7rem;
+    background: #21262d;
+    color: #8b949e;
+    border: 1px solid #30363d;
+    margin-bottom: 10px;
+    text-transform: uppercase;
+    font-weight: bold;
+}
+
+/* --- 7. FORMS & CONTACT --- */
+input, textarea, button {
+    width: 100%;
+    padding: 12px;
+    margin: 10px 0;
+    border: 1px solid #30363d;
+    border-radius: 6px;
+    box-sizing: border-box;
+    background: #0d1117;
+    color: white;
+    font-size: 1rem;
+}
+
+textarea {
+    resize: vertical;
+}
+
+button {
+    background: var(--teal);
+    color: white;
+    border: none;
+    font-weight: bold;
+    cursor: pointer;
+    transition: filter 0.2s, transform 0.1s;
+}
+
+button:hover {
+    filter: brightness(1.2);
+}
+
+button:active {
+    transform: scale(0.98);
+}
+
+/* --- 8. RESPONSIVE ADJUSTMENTS --- */
+@media (min-width: 768px) {
+    nav {
+        justify-content: center;
+    }
+    
+    .widget-grid {
+        grid-template-columns: repeat(3, 1fr); /* 3 widgets across on desktop */
+    }
+}
