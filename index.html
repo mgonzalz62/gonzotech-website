@@ -4,190 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>GonzoTech.us | Command Center</title>
-    
-    <style>
-        /* --- 1. GLOBAL SETTINGS & THEME --- */
-        :root {
-            --teal: #008080;        /* Primary brand accent */
-            --bg-blue: #0a0e14;     /* Deep Midnight Blue background */
-            --header-gray: #161b22; /* Navigation bar color */
-            --card-gray: #1c2128;   /* Background for boxes/cards */
-            --white: #adbac7;       /* Soft white for standard text */
-            --bright-white: #ffffff;/* Headings and highlights */
-            --log-green: #00ff41;   /* Terminal text color */
-        }
-
-        body {
-            font-family: 'Segoe UI', Roboto, sans-serif;
-            margin: 0;
-            background-color: var(--bg-blue);
-            color: var(--white);
-            line-height: 1.6;
-            overflow-x: hidden;
-        }
-
-        /* --- 2. NAVIGATION (TAB SYSTEM) --- */
-        header {
-            background-color: var(--header-gray);
-            padding: 5px 0;
-            position: sticky;
-            top: 0;
-            z-index: 1000;
-            border-bottom: 2px solid var(--teal);
-            box-shadow: 0 4px 10px rgba(0,0,0,0.5);
-        }
-
-        nav {
-            display: flex;
-            overflow-x: auto; /* Allows swiping tabs on mobile */
-            white-space: nowrap;
-            scrollbar-width: none;
-            padding: 0 10px;
-        }
-
-        nav::-webkit-scrollbar { display: none; }
-
-        .tab-btn {
-            background: none;
-            border: none;
-            color: #6e7681;
-            font-size: 0.9rem;
-            padding: 15px 20px;
-            cursor: pointer;
-            text-transform: uppercase;
-            font-weight: bold;
-            letter-spacing: 1px;
-            border-bottom: 3px solid transparent;
-            transition: 0.3s;
-        }
-
-        /* State for the active tab */
-        .tab-btn.active {
-            color: var(--teal);
-            border-bottom: 3px solid var(--teal);
-        }
-
-        /* --- 3. DASHBOARD WIDGETS --- */
-        .dashboard {
-            background: rgba(0,0,0,0.2);
-            padding: 20px;
-        }
-
-        .widget-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 15px;
-            max-width: 1200px;
-            margin: auto;
-        }
-
-        .widget {
-            background: var(--card-gray);
-            padding: 15px;
-            border-radius: 8px;
-            border: 1px solid #30363d;
-            text-align: center;
-        }
-
-        #clock { 
-            font-size: 2.2rem; 
-            font-family: 'Courier New', monospace; 
-            color: var(--teal); 
-        }
-
-        /* --- 4. SYSTEM LOG (TERMINAL) --- */
-        .system-log {
-            max-width: 1200px;
-            margin: 20px auto 0;
-            background: #000;
-            border: 1px solid #30363d;
-            border-radius: 5px;
-            padding: 15px;
-            font-family: 'Courier New', Courier, monospace;
-            font-size: 0.85rem;
-        }
-
-        .log-header { 
-            color: var(--teal); 
-            border-bottom: 1px solid #222; 
-            margin-bottom: 10px; 
-            padding-bottom: 5px;
-            font-weight: bold;
-        }
-
-        .log-entry { margin: 5px 0; color: var(--log-green); }
-
-        /* The flashing cursor effect */
-        .cursor { 
-            display: inline-block; 
-            width: 8px; 
-            height: 15px; 
-            background: var(--teal); 
-            animation: blink 1s infinite; 
-            vertical-align: middle; 
-        }
-        @keyframes blink { 50% { opacity: 0; } }
-
-        /* --- 5. CONTENT SECTIONS --- */
-        .content-section { 
-            display: none; /* All pages hidden by default */
-            padding: 40px 20px; 
-            max-width: 1000px; 
-            margin: auto; 
-        }
-        
-        /* Applied via JS to show the current page */
-        .content-section.active { 
-            display: block; 
-            animation: fadeIn 0.3s ease-in; 
-        }
-
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-
-        h1, h2 { color: var(--bright-white); }
-
-        /* Card styling for placeholders */
-        .placeholder-card {
-            background: var(--card-gray);
-            padding: 30px;
-            border-left: 5px solid #30363d;
-            margin-bottom: 20px;
-            border-radius: 4px;
-            text-align: center;
-        }
-
-        .status-badge {
-            display: inline-block;
-            padding: 4px 12px;
-            border-radius: 12px;
-            font-size: 0.75rem;
-            background: #21262d;
-            color: #8b949e;
-            border: 1px solid #30363d;
-            margin-bottom: 10px;
-            text-transform: uppercase;
-        }
-
-        /* --- 6. FORMS & BUTTONS --- */
-        input, textarea, button {
-            width: 100%; padding: 12px; margin: 10px 0; border: 1px solid #30363d; 
-            border-radius: 6px; box-sizing: border-box; background: #0d1117; color: white;
-            font-size: 1rem;
-        }
-
-        button { 
-            background: var(--teal); 
-            color: white; 
-            border: none; 
-            font-weight: bold; 
-            cursor: pointer; 
-            transition: 0.3s;
-        }
-        button:hover { filter: brightness(1.2); }
-
-        /* Centers navigation on desktop */
-        @media (min-width: 768px) { nav { justify-content: center; } }
-    </style>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
@@ -207,9 +24,8 @@
             <div class="widget">
                 <div style="font-size: 0.7rem; color: var(--teal); letter-spacing: 2px;">NODE CLOCK</div>
                 <div id="clock">00:00:00</div>
-                <div id="date" style="color: #6e7681; font-size: 0.8rem;">February 20, 2026</div>
+                <div id="date" style="color: #6e7681; font-size: 0.8rem;">---</div>
             </div>
-            
             <div class="widget">
                 <div style="font-size: 0.7rem; color: var(--teal); letter-spacing: 2px; margin-bottom: 10px;">SYSTEM VITALS</div>
                 <div style="text-align: left; font-family: monospace; font-size: 0.8rem;">
@@ -217,105 +33,28 @@
                     <div style="width: 100%; background: #333; height: 4px; margin: 5px 0;">
                         <div id="cpu-bar" style="width: 0%; background: var(--teal); height: 100%; transition: 0.5s;"></div>
                     </div>
-                    <div>MEM USAGE: <span id="mem-load" style="color: var(--log-green);">38% (LOW)</span></div>
                     <div>UPLINK: <span style="color: var(--teal);">SECURE</span></div>
                 </div>
             </div>
         </div>
-
         <div class="system-log">
-            <div class="log-header">GONZOTECH_TERMINAL_v2.0</div>
-            <div class="log-entry">> Core background loaded: Midnight Blue.</div>
-            <div class="log-entry">> Weather widget replaced by System Vitals [v1.0].</div>
-            <div class="log-entry">> Environment: Operational. <span class="cursor"></span></div>
+            <div class="log-header">GONZOTECH_TERMINAL</div>
+            <div id="log-container">Loading system logs...</div>
         </div>
     </div>
-
     <h1>Site Overview</h1>
-    <p>Welcome to GonzoTech.us. This portal serves as the primary interface for technical projects, software builds, and automated systems management.</p>
+    <p>GonzoTech.us active. Select a node from the navigation to begin.</p>
 </div>
 
-<div id="projects" class="content-section">
-    <h2>Project Repository</h2>
-    <div class="placeholder-card">
-        <div class="status-badge">Awaiting Deployment</div>
-        <h3>Project Alpha</h3>
-        <p>This entry is a placeholder for upcoming technical projects. Once the build phase is finalized, full documentation will be listed here.</p>
-    </div>
-</div>
-
-<div id="automation" class="content-section">
-    <h2>Automation Systems</h2>
-    <div class="placeholder-card">
-        <div class="status-badge">Node Offline</div>
-        <h3>Primary Network Map</h3>
-        <p>Integration maps and node statuses for local home automation systems are currently in a testing state.</p>
-    </div>
-</div>
-
-<div id="support" class="content-section">
-    <h2>Technical Support</h2>
-    <div class="placeholder-card">
-        <h3>Knowledge Base</h3>
-        <p>The FAQ and documentation portal is currently under construction. Please check back for updates.</p>
-    </div>
-</div>
+<div id="projects" class="content-section"><div id="project-list"></div></div>
+<div id="automation" class="content-section"><div id="automation-list"></div></div>
+<div id="support" class="content-section"><h2>Support</h2><div class="placeholder-card">Knowledge base offline.</div></div>
 
 <div id="contact" class="content-section">
-    <h2>Secure Communication</h2>
-    <form>
-        <input type="text" placeholder="Subject / ID" required>
-        <textarea rows="4" placeholder="Transmit your message..." required></textarea>
-        <button type="button" onclick="alert('Message Transmission Simulated')">TRANSMIT DATA</button>
-    </form>
+    <h2>Communication</h2>
+    <form><input type="text" placeholder="Subject"><textarea rows="4" placeholder="Message"></textarea><button type="button">TRANSMIT</button></form>
 </div>
 
-<script>
-    /**
-     * TAB NAVIGATION LOGIC
-     * Switches visibility of sections based on button clicks.
-     */
-    function showTab(id) {
-        // Hide all sections
-        document.querySelectorAll('.content-section').forEach(s => s.classList.remove('active'));
-        
-        // Un-highlight all buttons
-        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-        
-        // Show the clicked section and highlight button
-        document.getElementById(id).classList.add('active');
-        event.currentTarget.classList.add('active');
-        
-        window.scrollTo(0, 0);
-    }
-
-    /**
-     * LIVE CLOCK LOGIC
-     * Keeps the 'Node Clock' updated to the second.
-     */
-    function tick() {
-        const now = new Date();
-        document.getElementById('clock').textContent = now.toLocaleTimeString('en-US', { hour12: false });
-        
-        const dateOptions = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
-        document.getElementById('date').textContent = now.toLocaleDateString('en-US', dateOptions);
-    }
-    setInterval(tick, 1000); 
-    tick();
-
-    /**
-     * SYSTEM VITALS SIMULATOR
-     * Creates fluctuating CPU/Memory numbers for a 'live' dashboard feel.
-     */
-    function updateVitals() {
-        // Random CPU percentage between 4 and 12
-        const cpu = Math.floor(Math.random() * (12 - 4 + 1)) + 4; 
-        document.getElementById('cpu-load').textContent = cpu + "%";
-        document.getElementById('cpu-bar').style.width = cpu + "%";
-    }
-    setInterval(updateVitals, 3000);
-    updateVitals();
-</script>
-
+<script src="script.js"></script>
 </body>
 </html>
