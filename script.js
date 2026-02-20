@@ -18,15 +18,16 @@ function tick() {
 setInterval(tick, 1000);
 tick();
 
-// --- SYSTEM VITALS SIMULATOR ---
-function updateVitals() {
-    const cpuVal = Math.floor(Math.random() * (12 - 4 + 1)) + 4;
-    const cpuLoad = document.getElementById('cpu-load');
-    const cpuBar = document.getElementById('cpu-bar');
-    if(cpuLoad) cpuLoad.textContent = cpuVal + "%";
-    if(cpuBar) cpuBar.style.width = cpuVal + "%";
+// --- SESSION TIMER ---
+let seconds = 0;
+function updateSessionTimer() {
+    seconds++;
+    const mins = Math.floor(seconds / 60).toString().padStart(2, '0');
+    const secs = (seconds % 60).toString().padStart(2, '0');
+    const timerEl = document.getElementById('session-timer');
+    if(timerEl) timerEl.textContent = `${mins}:${secs}`;
 }
-setInterval(updateVitals, 3000);
+setInterval(updateSessionTimer, 1000);
 
 // --- DATA LOADER (The Pro Tip) ---
 // This function pulls data from data.json and builds the HTML
