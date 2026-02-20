@@ -1,77 +1,104 @@
-// --- TAB MANAGEMENT ---
+/**
+ * GONZOTECH CORE LOGIC
+ * Manages UI state, Timing, and Data Injection
+ */
+
+// --- 1. TAB NAVIGATION ---
 function showTab(id) {
+    // Hide all sections and remove active classes
     document.querySelectorAll('.content-section').forEach(s => s.classList.remove('active'));
     document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-    document.getElementById(id).classList.add('active');
-    if (event) event.currentTarget.classList.add('active');
+    
+    // Show target section
+    const target = document.getElementById(id);
+    if (target) {
+        target.classList.add('active');
+    }
+    
+    // Highlight active button
+    if (event && event.currentTarget) {
+        event.currentTarget.classList.add('active');
+    }
+    
     window.scrollTo(0, 0);
 }
 
-// --- LIVE CLOCK ---
-function tick() {
+// --- 2. TIME & SESSION METRICS ---
+let sessionSeconds = 0;
+
+function runTimers() {
     const now = new Date();
+    
+    // Update Clock
     const clockEl = document.getElementById('clock');
     const dateEl = document.getElementById('date');
     if(clockEl) clockEl.textContent = now.toLocaleTimeString('en-US', { hour12: false });
     if(dateEl) dateEl.textContent = now.toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
-}
-setInterval(tick, 1000);
-tick();
 
-// --- SESSION TIMER ---
-let seconds = 0;
-function updateSessionTimer() {
-    seconds++;
-    const mins = Math.floor(seconds / 60).toString().padStart(2, '0');
-    const secs = (seconds % 60).toString().padStart(2, '0');
+    // Update Session Timer
+    sessionSeconds++;
+    const mins = Math.floor(sessionSeconds / 60).toString().padStart(2, '0');
+    const secs = (sessionSeconds % 60).toString().padStart(2, '0');
     const timerEl = document.getElementById('session-timer');
     if(timerEl) timerEl.textContent = `${mins}:${secs}`;
 }
-setInterval(updateSessionTimer, 1000);
 
-// --- DATA LOADER (The Pro Tip) ---
-// This function pulls data from data.json and builds the HTML
+// Run timers every second
+setInterval(runTimers, 1000);
+
+// --- 3. DATA FETCHING (JSON DRIVEN) ---
 async function loadGonzoData() {
     try {
         const response = await fetch('./data.json');
+        if (!response.ok) throw new Error("Data file not found");
         const data = await response.json();
 
-        // Load Logs
-        const logContainer = document.getElementById('log-container');
-        logContainer.innerHTML = ''; // Clear existing
-        data.system_logs.forEach(log => {
-            logContainer.innerHTML += `<div class="log-entry"><span class="log-time">[${log.time}]</span> ${log.message}</div>`;
-        });
-        logContainer.innerHTML += `<span class="cursor"></span>`;
+        // Inject System Logs
+        const logBox = document.getElementById('log-container');
+        if (logBox && data.system_logs) {
+            logBox.innerHTML = ''; // Clear loader text
+            data.system_logs.forEach(log => {
+                logBox.innerHTML += `<div class="log-entry"><span class="log-time">[${log.time}]</span> ${log.message}</div>`;
+            });
+            logBox.innerHTML += `<span class="cursor"></span>`;
+        }
 
-        // Load Projects
-        const projectContainer = document.getElementById('project-list');
-        projectContainer.innerHTML = '<h2>Project Repository</h2>';
-        data.projects.forEach(proj => {
-            projectContainer.innerHTML += `
-                <div class="placeholder-card">
-                    <div class="status-badge">${proj.status}</div>
-                    <h3>${proj.name}</h3>
-                    <p>${proj.description}</p>
-                </div>`;
-        });
+        // Inject Projects
+        const projectBox = document.getElementById('project-list');
+        if (projectBox && data.projects) {
+            projectBox.innerHTML = '<h2>Project Repository</h2>';
+            data.projects.forEach(p => {
+                projectBox.innerHTML += `
+                    <div class="placeholder-card">
+                        <div class="status-badge">${p.status}</div>
+                        <h3>${p.name}</h3>
+                        <p>${p.description}</p>
+                    </div>`;
+            });
+        }
 
-        // Load Automation
-        const autoContainer = document.getElementById('automation-list');
-        autoContainer.innerHTML = '<h2>Automation Systems</h2>';
-        data.automation.forEach(item => {
-            autoContainer.innerHTML += `
-                <div class="placeholder-card">
-                    <div class="status-badge">${item.status}</div>
-                    <h3>${item.name}</h3>
-                    <p>${item.description}</p>
-                </div>`;
-        });
+        // Inject Automation
+        const autoBox = document.getElementById('automation-list');
+        if (autoBox && data.automation) {
+            autoBox.innerHTML = '<h2>Automation Systems</h2>';
+            data.automation.forEach(a => {
+                autoBox.innerHTML += `
+                    <div class="placeholder-card">
+                        <div class="status-badge">${a.status}</div>
+                        <h3>${a.name}</h3>
+                        <p>${a.description}</p>
+                    </div>`;
+            });
+        }
 
-    } catch (error) {
-        console.error("Error loading GonzoData:", error);
+    } catch (err) {
+        console.error("GonzoTech Data Error:", err);
+        document.getElementById('log-container').innerHTML = `<div class="log-entry" style="color:red">> ERROR: FAILED TO FETCH DATA.JSON</div>`;
     }
 }
 
-// Initialize data on load
-window.onload = loadGonzoData;
+// Initialize on page load
+window.addEventListener('DOMContentLoaded', () => {
+    loadGonzoData();
+    runTimers();
+});
