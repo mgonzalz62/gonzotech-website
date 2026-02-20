@@ -199,4 +199,134 @@
         <button class="tab-btn" onclick="showTab('projects')">Projects</button>
         <button class="tab-btn" onclick="showTab('automation')">Automation</button>
         <button class="tab-btn" onclick="showTab('support')">Support</button>
-        <button class="tab-btn" onclick="showTab('contact')">
+        <button class="tab-btn" onclick="showTab('contact')">Contact</button>
+    </nav>
+</header>
+
+<div id="home" class="content-section active">
+    <div class="dashboard">
+        <div class="widget-grid">
+            <div class="widget">
+                <div style="font-size: 0.7rem; color: var(--teal); letter-spacing: 2px;">NODE CLOCK</div>
+                <div id="clock">00:00:00</div>
+                <div id="date" style="color: #6e7681; font-size: 0.8rem;">---</div>
+            </div>
+            
+            <div class="widget">
+                <a class="weatherwidget-io" 
+                   href="https://forecast7.com/en/40film74_-74film01/new-york/" 
+                   data-label_1="GONZOTECH HQ" 
+                   data-label_2="WEATHER" 
+                   data-theme="pure" 
+                   data-basecolor="rgba(28, 33, 40, 0)" 
+                   data-accent="#008080" 
+                   data-textcolor="#adbac7">
+                   SYNCHRONIZING WEATHER...
+                </a>
+            </div>
+        </div>
+
+        <div class="system-log">
+            <div class="log-header">GONZOTECH_TERMINAL_v2.0</div>
+            <div class="log-entry">> Kernel check: OK.</div>
+            <div class="log-entry">> Dark Blue Theme: Active.</div>
+            <div class="log-entry">> Awaiting data deployment... <span class="cursor"></span></div>
+        </div>
+    </div>
+
+    <h1>Site Overview</h1>
+    <p>Welcome to GonzoTech.us. This portal serves as the primary interface for technical projects and automated system management.</p>
+</div>
+
+<div id="projects" class="content-section">
+    <h2>Project Repository</h2>
+    <div class="placeholder-card">
+        <div class="status-badge">Pending</div>
+        <h3>Project Alpha</h3>
+        <p>Documentation will be published upon completion of the initial build phase.</p>
+    </div>
+</div>
+
+<div id="automation" class="content-section">
+    <h2>Automation Systems</h2>
+    <div class="placeholder-card">
+        <div class="status-badge">Offline</div>
+        <h3>Primary Node Config</h3>
+        <p>System maps and node statuses will appear here once synchronized.</p>
+    </div>
+</div>
+
+<div id="support" class="content-section">
+    <h2>Technical Support</h2>
+    <div class="placeholder-card">
+        <h3>Knowledge Base</h3>
+        <p>Documentation and FAQ sections are currently under construction.</p>
+    </div>
+</div>
+
+<div id="contact" class="content-section">
+    <h2>Communication Portal</h2>
+    <form>
+        <input type="text" placeholder="Inquiry Subject">
+        <textarea rows="4" placeholder="Message Details..."></textarea>
+        <button type="button">TRANSMIT DATA</button>
+    </form>
+</div>
+
+<script>
+    /**
+     * TAB SWITCHING LOGIC
+     * Hides all sections, then reveals the one clicked.
+     */
+    function showTab(id) {
+        // Hide all content sections
+        document.querySelectorAll('.content-section').forEach(s => s.classList.remove('active'));
+        
+        // Remove 'active' styling from all buttons
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        
+        // Show the selected content and highlight the button
+        document.getElementById(id).classList.add('active');
+        event.currentTarget.classList.add('active');
+        
+        // Scroll back to top
+        window.scrollTo(0, 0);
+
+        // RE-TRIGGER WEATHER WIDGET: 
+        // Important because hidden elements often fail to render third-party scripts.
+        if(typeof __weatherwidget_init === 'function') __weatherwidget_init();
+    }
+
+    /**
+     * LIVE CLOCK LOGIC
+     * Updates the time and date every 1000 milliseconds (1 second).
+     */
+    function tick() {
+        const now = new Date();
+        document.getElementById('clock').textContent = now.toLocaleTimeString('en-US', { hour12: false });
+        document.getElementById('date').textContent = now.toLocaleDateString('en-US', { 
+            weekday: 'long', 
+            year: 'numeric', 
+            month: 'long', 
+            day: 'numeric' 
+        });
+    }
+    setInterval(tick, 1000); 
+    tick(); // Run immediately on load
+
+    /**
+     * EXTERNAL WEATHER SCRIPT
+     * Loads the weatherwidget.io data.
+     */
+    !function(d,s,id){
+        var js,fjs=d.getElementsByTagName(s)[0];
+        if(!d.getElementById(id)){
+            js=d.createElement(s);js.id=id;
+            js.src='https://weatherwidget.io/js/widget.min.js';
+            fjs.parentNode.insertBefore(js,fjs);
+        }
+    }(document,'script','weatherwidget-io-js');
+</script>
+
+</body>
+</html>
