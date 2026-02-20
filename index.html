@@ -6,29 +6,27 @@
     <title>GonzoTech.us | Command Center</title>
     
     <style>
-        /* --- COLOR & VARIABLE CONFIGURATION --- */
+        /* --- 1. GLOBAL SETTINGS & THEME --- */
         :root {
-            --teal: #008080;        /* Primary Brand Color */
-            --bg-blue: #0a0e14;     /* Deep Midnight Background */
-            --header-gray: #161b22; /* Slate Gray for Navigation */
-            --card-gray: #1c2128;   /* Slightly lighter gray for content boxes */
-            --white: #adbac7;       /* Soft white for body text */
-            --bright-white: #ffffff;/* Highlights and Headings */
-            --log-green: #00ff41;   /* "Matrix" style terminal text */
+            --teal: #008080;        /* Primary brand accent */
+            --bg-blue: #0a0e14;     /* Deep Midnight Blue background */
+            --header-gray: #161b22; /* Navigation bar color */
+            --card-gray: #1c2128;   /* Background for boxes/cards */
+            --white: #adbac7;       /* Soft white for standard text */
+            --bright-white: #ffffff;/* Headings and highlights */
+            --log-green: #00ff41;   /* Terminal text color */
         }
 
-        /* --- CORE PAGE STYLING --- */
         body {
             font-family: 'Segoe UI', Roboto, sans-serif;
             margin: 0;
             background-color: var(--bg-blue);
             color: var(--white);
             line-height: 1.6;
+            overflow-x: hidden;
         }
 
-        /* --- NAVIGATION TAB BAR --- 
-           Sticky header that stays at the top. 
-           'overflow-x: auto' allows swiping on mobile devices. */
+        /* --- 2. NAVIGATION (TAB SYSTEM) --- */
         header {
             background-color: var(--header-gray);
             padding: 5px 0;
@@ -41,13 +39,13 @@
 
         nav {
             display: flex;
-            overflow-x: auto;
+            overflow-x: auto; /* Allows swiping tabs on mobile */
             white-space: nowrap;
-            scrollbar-width: none; /* Hides scrollbar on Firefox */
+            scrollbar-width: none;
             padding: 0 10px;
         }
 
-        nav::-webkit-scrollbar { display: none; } /* Hides scrollbar on Chrome/Safari */
+        nav::-webkit-scrollbar { display: none; }
 
         .tab-btn {
             background: none;
@@ -63,13 +61,13 @@
             transition: 0.3s;
         }
 
+        /* State for the active tab */
         .tab-btn.active {
             color: var(--teal);
             border-bottom: 3px solid var(--teal);
         }
 
-        /* --- DASHBOARD & WIDGETS --- 
-           The grid system handles mobile-to-desktop transitions automatically. */
+        /* --- 3. DASHBOARD WIDGETS --- */
         .dashboard {
             background: rgba(0,0,0,0.2);
             padding: 20px;
@@ -89,7 +87,6 @@
             border-radius: 8px;
             border: 1px solid #30363d;
             text-align: center;
-            min-height: 100px;
         }
 
         #clock { 
@@ -98,8 +95,7 @@
             color: var(--teal); 
         }
 
-        /* --- SYSTEM LOG TERMINAL --- 
-           Designed to look like a live server console. */
+        /* --- 4. SYSTEM LOG (TERMINAL) --- */
         .system-log {
             max-width: 1200px;
             margin: 20px auto 0;
@@ -115,13 +111,13 @@
             color: var(--teal); 
             border-bottom: 1px solid #222; 
             margin-bottom: 10px; 
-            padding-bottom: 5px; 
+            padding-bottom: 5px;
             font-weight: bold;
         }
 
         .log-entry { margin: 5px 0; color: var(--log-green); }
 
-        /* The flashing cursor animation */
+        /* The flashing cursor effect */
         .cursor { 
             display: inline-block; 
             width: 8px; 
@@ -132,15 +128,15 @@
         }
         @keyframes blink { 50% { opacity: 0; } }
 
-        /* --- CONTENT SECTIONS --- 
-           'display: none' hides sections until the JavaScript 'active' class is applied. */
+        /* --- 5. CONTENT SECTIONS --- */
         .content-section { 
-            display: none; 
+            display: none; /* All pages hidden by default */
             padding: 40px 20px; 
             max-width: 1000px; 
             margin: auto; 
         }
         
+        /* Applied via JS to show the current page */
         .content-section.active { 
             display: block; 
             animation: fadeIn 0.3s ease-in; 
@@ -150,7 +146,7 @@
 
         h1, h2 { color: var(--bright-white); }
 
-        /* Generic Card Styling for Placeholders */
+        /* Card styling for placeholders */
         .placeholder-card {
             background: var(--card-gray);
             padding: 30px;
@@ -172,10 +168,11 @@
             text-transform: uppercase;
         }
 
-        /* --- FORMS & BUTTONS --- */
+        /* --- 6. FORMS & BUTTONS --- */
         input, textarea, button {
             width: 100%; padding: 12px; margin: 10px 0; border: 1px solid #30363d; 
             border-radius: 6px; box-sizing: border-box; background: #0d1117; color: white;
+            font-size: 1rem;
         }
 
         button { 
@@ -188,6 +185,7 @@
         }
         button:hover { filter: brightness(1.2); }
 
+        /* Centers navigation on desktop */
         @media (min-width: 768px) { nav { justify-content: center; } }
     </style>
 </head>
@@ -209,50 +207,49 @@
             <div class="widget">
                 <div style="font-size: 0.7rem; color: var(--teal); letter-spacing: 2px;">NODE CLOCK</div>
                 <div id="clock">00:00:00</div>
-                <div id="date" style="color: #6e7681; font-size: 0.8rem;">---</div>
+                <div id="date" style="color: #6e7681; font-size: 0.8rem;">February 20, 2026</div>
             </div>
             
             <div class="widget">
-                <a class="weatherwidget-io" 
-                   href="https://forecast7.com/en/40film74_-74film01/new-york/" 
-                   data-label_1="GONZOTECH HQ" 
-                   data-label_2="WEATHER" 
-                   data-theme="pure" 
-                   data-basecolor="rgba(28, 33, 40, 0)" 
-                   data-accent="#008080" 
-                   data-textcolor="#adbac7">
-                   SYNCHRONIZING WEATHER...
-                </a>
+                <div style="font-size: 0.7rem; color: var(--teal); letter-spacing: 2px; margin-bottom: 10px;">SYSTEM VITALS</div>
+                <div style="text-align: left; font-family: monospace; font-size: 0.8rem;">
+                    <div>CPU LOAD: <span id="cpu-load" style="color: var(--log-green);">0%</span></div>
+                    <div style="width: 100%; background: #333; height: 4px; margin: 5px 0;">
+                        <div id="cpu-bar" style="width: 0%; background: var(--teal); height: 100%; transition: 0.5s;"></div>
+                    </div>
+                    <div>MEM USAGE: <span id="mem-load" style="color: var(--log-green);">38% (LOW)</span></div>
+                    <div>UPLINK: <span style="color: var(--teal);">SECURE</span></div>
+                </div>
             </div>
         </div>
 
         <div class="system-log">
             <div class="log-header">GONZOTECH_TERMINAL_v2.0</div>
-            <div class="log-entry">> Kernel check: OK.</div>
-            <div class="log-entry">> Dark Blue Theme: Active.</div>
-            <div class="log-entry">> Awaiting data deployment... <span class="cursor"></span></div>
+            <div class="log-entry">> Core background loaded: Midnight Blue.</div>
+            <div class="log-entry">> Weather widget replaced by System Vitals [v1.0].</div>
+            <div class="log-entry">> Environment: Operational. <span class="cursor"></span></div>
         </div>
     </div>
 
     <h1>Site Overview</h1>
-    <p>Welcome to GonzoTech.us. This portal serves as the primary interface for technical projects and automated system management.</p>
+    <p>Welcome to GonzoTech.us. This portal serves as the primary interface for technical projects, software builds, and automated systems management.</p>
 </div>
 
 <div id="projects" class="content-section">
     <h2>Project Repository</h2>
     <div class="placeholder-card">
-        <div class="status-badge">Pending</div>
+        <div class="status-badge">Awaiting Deployment</div>
         <h3>Project Alpha</h3>
-        <p>Documentation will be published upon completion of the initial build phase.</p>
+        <p>This entry is a placeholder for upcoming technical projects. Once the build phase is finalized, full documentation will be listed here.</p>
     </div>
 </div>
 
 <div id="automation" class="content-section">
     <h2>Automation Systems</h2>
     <div class="placeholder-card">
-        <div class="status-badge">Offline</div>
-        <h3>Primary Node Config</h3>
-        <p>System maps and node statuses will appear here once synchronized.</p>
+        <div class="status-badge">Node Offline</div>
+        <h3>Primary Network Map</h3>
+        <p>Integration maps and node statuses for local home automation systems are currently in a testing state.</p>
     </div>
 </div>
 
@@ -260,72 +257,64 @@
     <h2>Technical Support</h2>
     <div class="placeholder-card">
         <h3>Knowledge Base</h3>
-        <p>Documentation and FAQ sections are currently under construction.</p>
+        <p>The FAQ and documentation portal is currently under construction. Please check back for updates.</p>
     </div>
 </div>
 
 <div id="contact" class="content-section">
-    <h2>Communication Portal</h2>
+    <h2>Secure Communication</h2>
     <form>
-        <input type="text" placeholder="Inquiry Subject">
-        <textarea rows="4" placeholder="Message Details..."></textarea>
-        <button type="button">TRANSMIT DATA</button>
+        <input type="text" placeholder="Subject / ID" required>
+        <textarea rows="4" placeholder="Transmit your message..." required></textarea>
+        <button type="button" onclick="alert('Message Transmission Simulated')">TRANSMIT DATA</button>
     </form>
 </div>
 
 <script>
     /**
-     * TAB SWITCHING LOGIC
-     * Hides all sections, then reveals the one clicked.
+     * TAB NAVIGATION LOGIC
+     * Switches visibility of sections based on button clicks.
      */
     function showTab(id) {
-        // Hide all content sections
+        // Hide all sections
         document.querySelectorAll('.content-section').forEach(s => s.classList.remove('active'));
         
-        // Remove 'active' styling from all buttons
+        // Un-highlight all buttons
         document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
         
-        // Show the selected content and highlight the button
+        // Show the clicked section and highlight button
         document.getElementById(id).classList.add('active');
         event.currentTarget.classList.add('active');
         
-        // Scroll back to top
         window.scrollTo(0, 0);
-
-        // RE-TRIGGER WEATHER WIDGET: 
-        // Important because hidden elements often fail to render third-party scripts.
-        if(typeof __weatherwidget_init === 'function') __weatherwidget_init();
     }
 
     /**
      * LIVE CLOCK LOGIC
-     * Updates the time and date every 1000 milliseconds (1 second).
+     * Keeps the 'Node Clock' updated to the second.
      */
     function tick() {
         const now = new Date();
         document.getElementById('clock').textContent = now.toLocaleTimeString('en-US', { hour12: false });
-        document.getElementById('date').textContent = now.toLocaleDateString('en-US', { 
-            weekday: 'long', 
-            year: 'numeric', 
-            month: 'long', 
-            day: 'numeric' 
-        });
+        
+        const dateOptions = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+        document.getElementById('date').textContent = now.toLocaleDateString('en-US', dateOptions);
     }
     setInterval(tick, 1000); 
-    tick(); // Run immediately on load
+    tick();
 
     /**
-     * EXTERNAL WEATHER SCRIPT
-     * Loads the weatherwidget.io data.
+     * SYSTEM VITALS SIMULATOR
+     * Creates fluctuating CPU/Memory numbers for a 'live' dashboard feel.
      */
-    !function(d,s,id){
-        var js,fjs=d.getElementsByTagName(s)[0];
-        if(!d.getElementById(id)){
-            js=d.createElement(s);js.id=id;
-            js.src='https://weatherwidget.io/js/widget.min.js';
-            fjs.parentNode.insertBefore(js,fjs);
-        }
-    }(document,'script','weatherwidget-io-js');
+    function updateVitals() {
+        // Random CPU percentage between 4 and 12
+        const cpu = Math.floor(Math.random() * (12 - 4 + 1)) + 4; 
+        document.getElementById('cpu-load').textContent = cpu + "%";
+        document.getElementById('cpu-bar').style.width = cpu + "%";
+    }
+    setInterval(updateVitals, 3000);
+    updateVitals();
 </script>
 
 </body>
