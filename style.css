@@ -1,0 +1,86 @@
+:root {
+    --teal: #008080;
+    --bg-blue: #0a0e14;
+    --header-gray: #161b22;
+    --card-gray: #1c2128;
+    --white: #adbac7;
+    --bright-white: #ffffff;
+    --log-green: #00ff41;
+}
+
+body {
+    font-family: 'Segoe UI', Roboto, sans-serif;
+    margin: 0;
+    background-color: var(--bg-blue);
+    color: var(--white);
+    line-height: 1.6;
+}
+
+header {
+    background-color: var(--header-gray);
+    padding: 5px 0;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    border-bottom: 2px solid var(--teal);
+}
+
+nav {
+    display: flex;
+    overflow-x: auto;
+    scrollbar-width: none;
+    padding: 0 10px;
+}
+
+nav::-webkit-scrollbar { display: none; }
+
+.tab-btn {
+    background: none;
+    border: none;
+    color: #6e7681;
+    font-size: 0.9rem;
+    padding: 15px 20px;
+    cursor: pointer;
+    text-transform: uppercase;
+    font-weight: bold;
+    border-bottom: 3px solid transparent;
+}
+
+.tab-btn.active {
+    color: var(--teal);
+    border-bottom: 3px solid var(--teal);
+}
+
+.dashboard { background: rgba(0,0,0,0.2); padding: 20px; }
+.widget-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 15px; max-width: 1200px; margin: auto; }
+.widget { background: var(--card-gray); padding: 15px; border-radius: 8px; border: 1px solid #30363d; text-align: center; }
+
+#clock { font-size: 2.2rem; font-family: monospace; color: var(--teal); }
+.log-time { color: #58a6ff; margin-right: 8px; }
+
+.system-log {
+    max-width: 1200px;
+    margin: 20px auto 0;
+    background: #000;
+    border: 1px solid #30363d;
+    border-radius: 5px;
+    padding: 15px;
+    font-family: 'Courier New', monospace;
+    font-size: 0.85rem;
+}
+
+.log-header { color: var(--teal); border-bottom: 1px solid #222; margin-bottom: 10px; font-weight: bold; }
+.log-entry { margin: 5px 0; color: var(--log-green); }
+.cursor { display: inline-block; width: 8px; height: 15px; background: var(--teal); animation: blink 1s infinite; vertical-align: middle; }
+@keyframes blink { 50% { opacity: 0; } }
+
+.content-section { display: none; padding: 40px 20px; max-width: 1000px; margin: auto; }
+.content-section.active { display: block; }
+
+.placeholder-card { background: var(--card-gray); padding: 30px; border-left: 5px solid #30363d; margin-bottom: 20px; border-radius: 4px; text-align: center; }
+.status-badge { display: inline-block; padding: 4px 12px; border-radius: 12px; font-size: 0.75rem; background: #21262d; color: #8b949e; border: 1px solid #30363d; margin-bottom: 10px; }
+
+input, textarea, button { width: 100%; padding: 12px; margin: 10px 0; border: 1px solid #30363d; border-radius: 6px; background: #0d1117; color: white; }
+button { background: var(--teal); font-weight: bold; cursor: pointer; }
+
+@media (min-width: 768px) { nav { justify-content: center; } }
