@@ -1,26 +1,59 @@
 {
   "system_logs": [
-    {"time": "08:45", "message": "Kernel check: OK."},
-    {"time": "09:12", "message": "External Data Source: Linked."},
-    {"time": "LIVE", "message": "System monitoring active..."}
+    {"time": "BOOT", "message": "TrueNAS SCALE initialized. Pool <span class='val'>tank</span> + <span class='val'>storage</span> online."},
+    {"time": "SVC",  "message": "All 9 Docker services confirmed <span class='cmd'>RUNNING</span> via Dockge."},
+    {"time": "NET",  "message": "Cloudflare tunnel active. 6 domains resolving on gonzotech.us."},
+    {"time": "VPN",  "message": "Gluetun / NordVPN handshake OK. ARR stack traffic routed securely."},
+    {"time": "SYNC", "message": "Recyclarr sync complete — Radarr &amp; Sonarr quality profiles up to date."},
+    {"time": "LIVE", "message": "System monitoring active. All endpoints healthy. <span class='cmd'>NOMINAL</span>."}
   ],
   "projects": [
     {
-      "name": "Project Alpha",
-      "status": "Awaiting Deployment",
-      "description": "Technical documentation will be published upon completion of the initial build phase."
+      "name": "Homelab Foundation",
+      "status": "complete",
+      "description": "Stood up TrueNAS SCALE on a Dell Optiplex 3070 SFF with a dual-pool storage setup (3TB HDD media pool + SSD config pool). All services containerized in Dockge and exposed via Cloudflare Zero Trust tunnels — no open ports required."
     },
     {
-      "name": "Project Beta",
-      "status": "In Planning",
-      "description": "Details for this upcoming node expansion are currently classified."
+      "name": "Media Ecosystem",
+      "status": "complete",
+      "description": "Full media stack deployed: Jellyfin for streaming (Intel QuickSync hardware transcoding, custom GonzoTech CSS branding), and an automated acquisition pipeline using Sonarr, Radarr, Prowlarr, and qBittorrent all routed through NordVPN via Gluetun."
+    },
+    {
+      "name": "Photo & Game Libraries",
+      "status": "complete",
+      "description": "Immich manages self-hosted photo/video backup with SMB external library integration. Romm catalogs 2,300+ ROMs across 19 platforms with full IGDB metadata. Both accessible remotely via dedicated subdomains."
+    },
+    {
+      "name": "Storage Expansion",
+      "status": "wip",
+      "description": "Planning an 8TB HDD addition with data migration from the current 3TB pool. Goal is to extend the media library capacity while maintaining the hardlink-compatible folder structure for efficient storage."
+    },
+    {
+      "name": "Hardware Upgrade",
+      "status": "planned",
+      "description": "The Optiplex 3070 SFF has served well, but a more expandable system is on the horizon — more PCIe slots, additional drive bays, and headroom for future workloads like local AI inference or additional VMs."
     }
   ],
   "automation": [
     {
-      "name": "Primary Network Map",
-      "status": "Offline",
-      "description": "Integration maps for local home automation are currently in a testing state."
+      "name": "Media Acquisition Pipeline",
+      "status": "active",
+      "description": "Sonarr and Radarr monitor RSS feeds and trigger qBittorrent downloads automatically. Prowlarr aggregates all indexers in one place. Completed downloads are moved and renamed without any manual intervention."
+    },
+    {
+      "name": "Quality Profile Sync (Recyclarr)",
+      "status": "active",
+      "description": "Recyclarr syncs TRaSH Guide quality profiles into Radarr and Sonarr on a schedule — keeping release scoring, custom formats, and quality cutoffs consistently tuned without manual edits."
+    },
+    {
+      "name": "Cloudflare Tunnel Management",
+      "status": "active",
+      "description": "Cloudflared runs as a Docker container and maintains persistent tunnels for all six public subdomains. No dynamic DNS, no port forwarding — services are exposed securely through Cloudflare's network."
+    },
+    {
+      "name": "Service Monitoring (Uptime Kuma)",
+      "status": "active",
+      "description": "Uptime Kuma polls all internal and external service endpoints on a regular interval. A public status page at status.gonzotech.us gives a live view of what's up — grouped by service category."
     }
   ]
 }
