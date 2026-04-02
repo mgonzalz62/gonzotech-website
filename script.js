@@ -1,25 +1,20 @@
 /**
- * GONZOTECH CORE LOGIC
- * Manages UI state, Timing, and Data Injection
+ * GONZOTECH CORE LOGIC v2
+ * Tab navigation · Timers · Data injection
  */
 
 // --- 1. TAB NAVIGATION ---
-function showTab(id) {
-    // Hide all sections and remove active classes
+function showTab(id, btn) {
     document.querySelectorAll('.content-section').forEach(s => s.classList.remove('active'));
     document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-    
-    // Show target section
+
     const target = document.getElementById(id);
-    if (target) {
-        target.classList.add('active');
-    }
-    
-    // Highlight active button
-    if (event && event.currentTarget) {
-        event.currentTarget.classList.add('active');
-    }
-    
+    if (target) target.classList.add('active');
+
+    // Use passed button, or fall back to event target
+    const activeBtn = btn || (event && event.currentTarget);
+    if (activeBtn) activeBtn.classList.add('active');
+
     window.scrollTo(0, 0);
 }
 
@@ -28,77 +23,116 @@ let sessionSeconds = 0;
 
 function runTimers() {
     const now = new Date();
-    
-    // Update Clock
-    const clockEl = document.getElementById('clock');
-    const dateEl = document.getElementById('date');
-    if(clockEl) clockEl.textContent = now.toLocaleTimeString('en-US', { hour12: false });
-    if(dateEl) dateEl.textContent = now.toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
 
-    // Update Session Timer
+    const clockEl = document.getElementById('clock');
+    const dateEl  = document.getElementById('date');
+    if (clockEl) clockEl.textContent = now.toLocaleTimeString('en-US', { hour12: false });
+    if (dateEl)  dateEl.textContent  = now.toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+
     sessionSeconds++;
     const mins = Math.floor(sessionSeconds / 60).toString().padStart(2, '0');
     const secs = (sessionSeconds % 60).toString().padStart(2, '0');
     const timerEl = document.getElementById('session-timer');
-    if(timerEl) timerEl.textContent = `${mins}:${secs}`;
+    if (timerEl) timerEl.textContent = `${mins}:${secs}`;
 }
 
-// Run timers every second
 setInterval(runTimers, 1000);
 
-// --- 3. DATA FETCHING (JSON DRIVEN) ---
+// --- 3. STATUS BADGE HELPER ---
+function badgeHTML(status) {
+    const map = {
+        complete: { cls: '',        label: '● Complete' },
+        active:   { cls: '',        label: '● Active'   },
+        wip:      { cls: ' wip',    label: '◐ In Progress' },
+        planned:  { cls: ' planned',label: '○ Planned'  },
+        offline:  { cls: ' offline',label: '✕ Offline'  },
+    };
+    const key = (status || '').toLowerCase().replace(/\s+/g, '');
+    const entry = map[key] || { cls: '', label: status };
+    return `<span class="status-badge${entry.cls}">${entry.label}</span>`;
+}
+
+// --- 4. DATA FETCHING ---
 async function loadGonzoData() {
     try {
         const response = await fetch('./data.json');
-        if (!response.ok) throw new Error("Data file not found");
+        if (!response.ok) throw new Error('Data file not found');
         const data = await response.json();
 
-        // Inject System Logs
+        // --- System Logs ---
         const logBox = document.getElementById('log-container');
         if (logBox && data.system_logs) {
-            logBox.innerHTML = ''; // Clear loader text
+            logBox.innerHTML = '';
             data.system_logs.forEach(log => {
                 logBox.innerHTML += `<div class="log-entry"><span class="log-time">[${log.time}]</span> ${log.message}</div>`;
             });
             logBox.innerHTML += `<span class="cursor"></span>`;
         }
 
-        // Inject Projects
+        // --- Projects ---
         const projectBox = document.getElementById('project-list');
         if (projectBox && data.projects) {
-            projectBox.innerHTML = '<h2>Project Repository</h2>';
+            projectBox.innerHTML = '';
             data.projects.forEach(p => {
+                const accentMap = { complete: '', active: '', wip: ' amber', planned: ' blue', offline: ' red' };
+                const key = (p.status || '').toLowerCase().replace(/\s+/g, '');
+                const accent = accentMap[key] !== undefined ? accentMap[key] : '';
                 projectBox.innerHTML += `
-                    <div class="placeholder-card">
-                        <div class="status-badge">${p.status}</div>
-                        <h3>${p.name}</h3>
-                        <p>${p.description}</p>
-                    </div>`;
+                <div class="card${accent}" style="margin-bottom:16px">
+                    <div class="card-title">
+                        ${p.name}
+                        ${badgeHTML(p.status)}
+                    </div>
+                    <div class="card-body">${p.description}</div>
+                </div>`;
             });
         }
 
-        // Inject Automation
+        // --- Automation ---
         const autoBox = document.getElementById('automation-list');
         if (autoBox && data.automation) {
-            autoBox.innerHTML = '<h2>Automation Systems</h2>';
+            autoBox.innerHTML = '';
             data.automation.forEach(a => {
+                const accentMap = { complete: '', active: '', wip: ' amber', planned: ' blue', offline: ' red' };
+                const key = (a.status || '').toLowerCase().replace(/\s+/g, '');
+                const accent = accentMap[key] !== undefined ? accentMap[key] : '';
                 autoBox.innerHTML += `
-                    <div class="placeholder-card">
-                        <div class="status-badge">${a.status}</div>
-                        <h3>${a.name}</h3>
-                        <p>${a.description}</p>
-                    </div>`;
+                <div class="card${accent}" style="margin-bottom:16px">
+                    <div class="card-title">
+                        ${a.name}
+                        ${badgeHTML(a.status)}
+                    </div>
+                    <div class="card-body">${a.description}</div>
+                </div>`;
             });
         }
 
     } catch (err) {
-        console.error("GonzoTech Data Error:", err);
-        document.getElementById('log-container').innerHTML = `<div class="log-entry" style="color:red">> ERROR: FAILED TO FETCH DATA.JSON</div>`;
+        console.error('GonzoTech Data Error:', err);
+        const logBox = document.getElementById('log-container');
+        if (logBox) logBox.innerHTML = `<div class="log-entry" style="color:var(--red)">> ERROR: FAILED TO FETCH DATA.JSON</div>`;
     }
 }
 
-// Initialize on page load
-window.addEventListener('DOMContentLoaded', () => {
+// --- 5. CONTACT FORM ---
+document.addEventListener('DOMContentLoaded', () => {
     loadGonzoData();
     runTimers();
+
+    const form = document.getElementById('contact-form');
+    if (form) {
+        form.addEventListener('submit', e => {
+            e.preventDefault();
+            const btn = form.querySelector('.btn-transmit');
+            if (btn) {
+                btn.textContent = '✓ TRANSMISSION RECEIVED';
+                btn.style.color = 'var(--green)';
+                setTimeout(() => {
+                    btn.textContent = '⟶ TRANSMIT DATA';
+                    btn.style.color = '';
+                    form.reset();
+                }, 3000);
+            }
+        });
+    }
 });
