@@ -7,74 +7,236 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
+<div class="page-wrap">
 
+<!-- ====== HEADER ====== -->
 <header>
-    <nav>
-        <button class="tab-btn active" onclick="showTab('home')">Home</button>
-        <button class="tab-btn" onclick="showTab('projects')">Projects</button>
-        <button class="tab-btn" onclick="showTab('automation')">Automation</button>
-        <button class="tab-btn" onclick="showTab('support')">Support</button>
-        <button class="tab-btn" onclick="showTab('contact')">Contact</button>
-    </nav>
+    <div class="header-inner">
+        <div class="logo-block">
+            <div class="logo-text">// COMMAND CENTER</div>
+            <div class="logo-title">Gonzo<span>Tech</span></div>
+        </div>
+        <nav>
+            <button class="tab-btn active" onclick="showTab('home', this)">Home</button>
+            <button class="tab-btn" onclick="showTab('services', this)">Services</button>
+            <button class="tab-btn" onclick="showTab('projects', this)">Projects</button>
+            <button class="tab-btn" onclick="showTab('automation', this)">Automation</button>
+            <button class="tab-btn" onclick="showTab('contact', this)">Contact</button>
+        </nav>
+        <div class="nav-docs-link">
+            <a href="/docs/" target="_blank">↗ Full Docs</a>
+        </div>
+    </div>
 </header>
 
+<!-- ====== HOME ====== -->
 <div id="home" class="content-section active">
-    <div class="dashboard">
+
+    <div class="page-header">
+        <div>
+            <div class="page-title">GonzoTech Command Center</div>
+            <div class="page-subtitle">// SELF-HOSTED HOMELAB · GONZOTECH.US · TRUENAS + CLOUDFLARE</div>
+        </div>
+        <span class="status-chip chip-complete">● OPERATIONAL</span>
+    </div>
+
+    <div class="content">
+
+        <!-- Stats -->
+        <div class="stat-row">
+            <div class="stat-card"><div class="stat-val">9</div><div class="stat-label">Active Services</div></div>
+            <div class="stat-card"><div class="stat-val">6</div><div class="stat-label">Domains Live</div></div>
+            <div class="stat-card"><div class="stat-val" style="color:var(--amber)">2.3K</div><div class="stat-label">ROMs Catalogued</div></div>
+            <div class="stat-card"><div class="stat-val" style="color:var(--blue)">3TB</div><div class="stat-label">Media Storage</div></div>
+        </div>
+
+        <!-- Widgets Row -->
         <div class="widget-grid">
             <div class="widget">
-                <div class="widget-label">SYSTEM TIME</div>
+                <div class="widget-label">System Time</div>
                 <div id="clock">00:00:00</div>
-                <div id="date" style="color: #6e7681; font-size: 0.8rem;">---</div>
+                <div id="date">---</div>
             </div>
-            
             <div class="widget">
-                <div class="widget-label">SESSION ACTIVE</div>
+                <div class="widget-label">Session Active</div>
                 <div id="session-timer">00:00</div>
-                <div style="font-size: 0.7rem; color: #6e7681;">TIME SINCE CONNECTION</div>
+                <div style="font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--text-dim);margin-top:4px;letter-spacing:1px;">TIME SINCE CONNECTION</div>
             </div>
-
             <div class="widget">
-                <div class="widget-label">ENVIRONMENT SPECS</div>
+                <div class="widget-label">Environment</div>
                 <div class="spec-list">
                     <div>HOST: <span>Cloudflare Pages</span></div>
                     <div>STACK: <span>Vanilla JS / JSON</span></div>
-                    <div>UPLINK: <span style="color: var(--log-green);">SECURE</span></div>
+                    <div>UPLINK: <span style="color:var(--green)">SECURE</span></div>
                 </div>
             </div>
         </div>
 
+        <!-- Terminal Log -->
         <div class="system-log">
             <div class="log-header">GONZOTECH_TERMINAL</div>
             <div id="log-container">Initializing data fetch...</div>
         </div>
+
+        <!-- What's Running -->
+        <div class="section-divider">What's Running</div>
+
+        <div class="info-box">
+            <div class="info-label">About This Lab</div>
+            GonzoTech is a fully self-hosted homelab running on TrueNAS (Dell Optiplex 3070 SFF). It powers a complete media, gaming, photo management, and development ecosystem — all accessible remotely via Cloudflare tunnels under gonzotech.us with zero port forwarding required.
+        </div>
+
+        <div class="grid-3">
+            <div class="card">
+                <div class="card-title">🎬 Media Server</div>
+                <div class="card-body">Jellyfin handles all media playback with Intel QuickSync hardware transcoding. Custom GonzoTech CSS branding applied.</div>
+                <div style="margin-top:10px"><span class="tag tag-green">watch.gonzotech.us</span></div>
+            </div>
+            <div class="card amber">
+                <div class="card-title">📡 ARR Stack</div>
+                <div class="card-body">Automated media acquisition via Sonarr, Radarr, Prowlarr, and qBittorrent — all routed through NordVPN via Gluetun.</div>
+                <div style="margin-top:10px"><span class="tag tag-amber">requests.gonzotech.us</span></div>
+            </div>
+            <div class="card blue">
+                <div class="card-title">📸 Photos</div>
+                <div class="card-body">Immich handles self-hosted photo and video backup with an SMB external library for seamless NAS integration.</div>
+                <div style="margin-top:10px"><span class="tag tag-blue">photos.gonzotech.us</span></div>
+            </div>
+            <div class="card purple">
+                <div class="card-title">🎮 Game Library</div>
+                <div class="card-body">Romm manages a growing ROM collection — 2,300+ titles across 19 platforms, with IGDB metadata integration.</div>
+                <div style="margin-top:10px"><span class="tag tag-purple">play.gonzotech.us</span></div>
+            </div>
+            <div class="card">
+                <div class="card-title">📊 Monitoring</div>
+                <div class="card-body">Uptime Kuma keeps tabs on all services with real-time status checks and a public-facing status page.</div>
+                <div style="margin-top:10px"><span class="tag tag-green">status.gonzotech.us</span></div>
+            </div>
+            <div class="card dim">
+                <div class="card-title">💻 Dev Environment</div>
+                <div class="card-body">Code-Server provides browser-accessible VS Code for remote configuration management and development work.</div>
+                <div style="margin-top:10px"><span class="tag tag-amber">code.gonzotech.us</span></div>
+            </div>
+        </div>
+
     </div>
-    
-    <h1>GonzoTech Command Center</h1>
-    <p>Welcome. This portal manages the documentation and status of custom engineering projects and automation nodes.</p>
 </div>
 
+<!-- ====== SERVICES ====== -->
+<div id="services" class="content-section">
+    <div class="page-header">
+        <div>
+            <div class="page-title">Active Services</div>
+            <div class="page-subtitle">// LIVE DOMAINS &amp; SERVICE STATUS</div>
+        </div>
+        <span class="status-chip chip-complete">6 DOMAINS LIVE</span>
+    </div>
+    <div class="content">
+        <div class="section-divider">Domains</div>
+
+        <div class="domain-row">
+            <div class="live-dot"></div>
+            <div class="domain-url">watch.gonzotech.us</div>
+            <div class="domain-svc">Jellyfin — Media Streaming</div>
+        </div>
+        <div class="domain-row">
+            <div class="live-dot"></div>
+            <div class="domain-url">requests.gonzotech.us</div>
+            <div class="domain-svc">Seerr — Content Requests</div>
+        </div>
+        <div class="domain-row">
+            <div class="live-dot"></div>
+            <div class="domain-url">photos.gonzotech.us</div>
+            <div class="domain-svc">Immich — Photo Management</div>
+        </div>
+        <div class="domain-row">
+            <div class="live-dot"></div>
+            <div class="domain-url">play.gonzotech.us</div>
+            <div class="domain-svc">Romm — Game Library</div>
+        </div>
+        <div class="domain-row">
+            <div class="live-dot"></div>
+            <div class="domain-url">status.gonzotech.us</div>
+            <div class="domain-svc">Uptime Kuma — Service Monitor</div>
+        </div>
+        <div class="domain-row">
+            <div class="live-dot"></div>
+            <div class="domain-url">truenas.gonzotech.us</div>
+            <div class="domain-svc">TrueNAS — Storage Management</div>
+        </div>
+
+        <div class="section-divider">Stack Overview</div>
+
+        <div class="card">
+            <div class="card-title">Network Architecture</div>
+            <div class="card-body">All services are tunneled through Cloudflare Zero Trust — no ports exposed, no static IP required. Docker containers run in Dockge for easy stack management. DNS handled entirely through Cloudflare.</div>
+        </div>
+
+        <div class="grid-2" style="margin-top:0">
+            <div class="card amber">
+                <div class="card-title">Hardware</div>
+                <div class="card-meta">DELL OPTIPLEX 3070 SFF</div>
+                <div class="card-body">Intel Core i5-9500T · 16GB DDR4 · 2.5G NIC<br>TrueNAS SCALE · Dockge container management</div>
+            </div>
+            <div class="card blue">
+                <div class="card-title">Storage</div>
+                <div class="card-meta">DUAL POOL SETUP</div>
+                <div class="card-body"><strong style="color:var(--text-bright)">tank</strong> — 3TB HDD for media &amp; torrents<br><strong style="color:var(--text-bright)">storage</strong> — SSD pool for app configs</div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<!-- ====== PROJECTS ====== -->
 <div id="projects" class="content-section">
-    <div id="project-list"></div>
+    <div class="page-header">
+        <div>
+            <div class="page-title">Projects</div>
+            <div class="page-subtitle">// BUILDS, UPGRADES &amp; ONGOING WORK</div>
+        </div>
+        <span class="status-chip chip-wip">IN PROGRESS</span>
+    </div>
+    <div class="content">
+        <div id="project-list"></div>
+    </div>
 </div>
 
+<!-- ====== AUTOMATION ====== -->
 <div id="automation" class="content-section">
-    <div id="automation-list"></div>
+    <div class="page-header">
+        <div>
+            <div class="page-title">Automation</div>
+            <div class="page-subtitle">// PIPELINES &amp; AUTOMATED SYSTEMS</div>
+        </div>
+        <span class="status-chip chip-complete">ACTIVE</span>
+    </div>
+    <div class="content">
+        <div id="automation-list"></div>
+    </div>
 </div>
 
-<div id="support" class="content-section">
-    <h2>Technical Support</h2>
-    <div id="support-list"></div>
-</div>
-
+<!-- ====== CONTACT ====== -->
 <div id="contact" class="content-section">
-    <h2>Secure Communication</h2>
-    <form id="contact-form">
-        <input type="text" placeholder="Subject / Inquiry ID" required>
-        <textarea rows="5" placeholder="Enter message details..." required></textarea>
-        <button type="submit">TRANSMIT DATA</button>
-    </form>
+    <div class="page-header">
+        <div>
+            <div class="page-title">Contact</div>
+            <div class="page-subtitle">// SECURE COMMUNICATION CHANNEL</div>
+        </div>
+    </div>
+    <div class="content" style="max-width:600px">
+        <div class="card" style="margin-bottom:20px">
+            <div class="card-body">Use this form to get in touch. Messages are routed securely through the GonzoTech system.</div>
+        </div>
+        <form id="contact-form">
+            <input type="text" placeholder="Subject / Inquiry ID" required>
+            <textarea rows="5" placeholder="Enter message details..." required></textarea>
+            <button type="submit" class="btn-transmit">⟶ TRANSMIT DATA</button>
+        </form>
+    </div>
 </div>
 
+</div><!-- end page-wrap -->
 <script src="script.js"></script>
 </body>
 </html>
