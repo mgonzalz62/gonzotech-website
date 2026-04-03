@@ -982,7 +982,7 @@ group_add:
     <!-- TAILSCALE -->
     <div id="page-tailscale" class="page">
       <div class="page-header">
-        <div><div class="page-title">Tailscale VPN</div><div class="page-subtitle">// PRIVATE ACCESS · axolotl-grouse.ts.net</div></div>
+        <div><div class="page-title">Tailscale VPN</div><div class="page-subtitle">// PRIVATE ACCESS · Tailscale VPN</div></div>
         <span class="status-chip chip-complete">● Complete</span>
       </div>
       <div class="content">
@@ -995,12 +995,12 @@ group_add:
         <div class="grid-2">
           <div class="card">
             <div class="card-title">🖥️ TrueNAS Server</div>
-            <div class="card-meta">100.90.117.106</div>
-            <div class="card-body" style="font-size:12px;">Installed via Apps catalog with subnet routing for <code style="color:var(--amber)">192.168.68.0/24</code>. Exposes the entire home LAN to all enrolled Tailscale devices.</div>
+            <div class="card-meta">Behind Tailscale</div>
+            <div class="card-body" style="font-size:12px;">Installed via Apps catalog with subnet routing for <code style="color:var(--amber)">internal IP</code>. Exposes the entire home LAN to all enrolled Tailscale devices.</div>
           </div>
           <div class="card">
             <div class="card-title">💻 Fedora Laptop</div>
-            <div class="card-meta">100.123.201.67</div>
+            <div class="card-meta">Behind Tailscale</div>
             <div class="card-body" style="font-size:12px;">Installed via package manager with Trayscale GUI for system tray access. Runs as a systemd service — auto-starts on boot.</div>
           </div>
         </div>
@@ -1009,11 +1009,11 @@ group_add:
         <div class="card dim">
           <div class="card-body">
             <ul style="list-style:none;display:flex;flex-direction:column;gap:8px;">
-              <li style="display:flex;gap:8px;font-size:12px;"><span style="color:var(--green)">›</span> <strong style="color:var(--text-bright)">Storage UI</strong> — http://truenas.axolotl-grouse.ts.net</li>
-              <li style="display:flex;gap:8px;font-size:12px;"><span style="color:var(--green)">›</span> <strong style="color:var(--text-bright)">Container Manager</strong> — http://truenas.axolotl-grouse.ts.net:&lt;port&gt;</li>
-              <li style="display:flex;gap:8px;font-size:12px;"><span style="color:var(--green)">›</span> <strong style="color:var(--text-bright)">Code-Server</strong> — http://truenas.axolotl-grouse.ts.net:&lt;port&gt;</li>
-              <li style="display:flex;gap:8px;font-size:12px;"><span style="color:var(--green)">›</span> <strong style="color:var(--text-bright)">AdGuard Home</strong> — http://truenas.axolotl-grouse.ts.net:3000</li>
-              <li style="display:flex;gap:8px;font-size:12px;"><span style="color:var(--green)">›</span> <strong style="color:var(--text-bright)">Short form (any enrolled device)</strong> — http://truenas</li>
+              <li style="display:flex;gap:8px;font-size:12px;"><span style="color:var(--green)">›</span> <strong style="color:var(--text-bright)">Storage UI</strong> — Tailscale VPN</li>
+              <li style="display:flex;gap:8px;font-size:12px;"><span style="color:var(--green)">›</span> <strong style="color:var(--text-bright)">Container Manager</strong> — Tailscale VPN:&lt;port&gt;</li>
+              <li style="display:flex;gap:8px;font-size:12px;"><span style="color:var(--green)">›</span> <strong style="color:var(--text-bright)">Code-Server</strong> — Tailscale VPN:&lt;port&gt;</li>
+              <li style="display:flex;gap:8px;font-size:12px;"><span style="color:var(--green)">›</span> <strong style="color:var(--text-bright)">AdGuard Home</strong> — Tailscale VPN</li>
+              <li style="display:flex;gap:8px;font-size:12px;"><span style="color:var(--green)">›</span> <strong style="color:var(--text-bright)">Short form (any enrolled device)</strong> — Tailscale VPN</li>
             </ul>
           </div>
         </div>
