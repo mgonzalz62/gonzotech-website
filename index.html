@@ -1,1087 +1,256 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-<meta charset="UTF-8">
-<style>
-  @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;600;700&family=Syne:wght@400;600;700;800&display=swap');
-
-  :root {
-    --bg: #0a0c10;
-    --surface: #111419;
-    --surface2: #181c23;
-    --border: #1e2430;
-    --border2: #252d3d;
-    --green: #39ff14;
-    --green-dim: #1a7a06;
-    --amber: #ffb700;
-    --amber-dim: #7a5500;
-    --blue: #4da6ff;
-    --blue-dim: #1a4a7a;
-    --red: #ff4757;
-    --purple: #a855f7;
-    --text: #c9d4e8;
-    --text-dim: #5a6a85;
-    --text-bright: #e8f0ff;
-    --radius: 6px;
-  }
-
-  * { margin: 0; padding: 0; box-sizing: border-box; }
-  
-  body {
-    background: var(--bg);
-    color: var(--text);
-    font-family: 'Syne', sans-serif;
-    min-height: 100vh;
-    overflow-x: hidden;
-  }
-
-  body::before {
-    content: '';
-    position: fixed;
-    inset: 0;
-    background-image: 
-      linear-gradient(rgba(61,255,20,0.03) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(61,255,20,0.03) 1px, transparent 1px);
-    background-size: 40px 40px;
-    pointer-events: none;
-    z-index: 0;
-  }
-
-  .layout {
-    display: flex;
-    min-height: 100vh;
-    position: relative;
-    z-index: 1;
-  }
-
-  .sidebar {
-    width: 240px;
-    flex-shrink: 0;
-    background: var(--surface);
-    border-right: 1px solid var(--border);
-    display: flex;
-    flex-direction: column;
-    position: sticky;
-    top: 0;
-    height: 100vh;
-    overflow-y: auto;
-  }
-
-  .logo-block {
-    padding: 20px 16px 16px;
-    border-bottom: 1px solid var(--border);
-  }
-
-  .logo-text {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 11px;
-    color: var(--green);
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    margin-bottom: 4px;
-  }
-
-  .logo-title {
-    font-size: 20px;
-    font-weight: 800;
-    color: var(--text-bright);
-    line-height: 1;
-  }
-
-  .logo-title span { color: var(--green); }
-
-  .logo-sub {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 9px;
-    color: var(--text-dim);
-    margin-top: 6px;
-    letter-spacing: 1px;
-  }
-
-  .hw-badge {
-    margin: 12px 16px 0;
-    background: var(--surface2);
-    border: 1px solid var(--border2);
-    border-radius: var(--radius);
-    padding: 8px 10px;
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 9px;
-    color: var(--amber);
-    letter-spacing: 0.5px;
-    line-height: 1.6;
-  }
-
-  .nav-section { padding: 16px 16px 0; }
-
-  .nav-label {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 9px;
-    color: var(--text-dim);
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    margin-bottom: 6px;
-  }
-
-  .nav-item {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    padding: 7px 10px;
-    border-radius: var(--radius);
-    cursor: pointer;
-    font-size: 12px;
-    font-weight: 600;
-    color: var(--text-dim);
-    transition: all 0.15s;
-    margin-bottom: 2px;
-    letter-spacing: 0.3px;
-    border: 1px solid transparent;
-  }
-
-  .nav-item:hover { background: var(--surface2); color: var(--text); }
-  .nav-item.active { background: rgba(57,255,20,0.08); color: var(--green); border-color: rgba(57,255,20,0.15); }
-
-  .nav-dot { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; }
-  .dot-green { background: var(--green); box-shadow: 0 0 6px var(--green); }
-  .dot-amber { background: var(--amber); box-shadow: 0 0 6px var(--amber); }
-  .dot-blue { background: var(--blue); }
-  .dot-purple { background: var(--purple); }
-
-  .sidebar-footer {
-    margin-top: auto;
-    padding: 12px 16px;
-    border-top: 1px solid var(--border);
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 9px;
-    color: var(--text-dim);
-    line-height: 1.8;
-  }
-
-  .main { flex: 1; overflow-y: auto; }
-
-  .page { display: none; animation: fadeIn 0.2s ease; }
-  .page.active { display: block; }
-
-  @keyframes fadeIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
-
-  .page-header {
-    padding: 28px 32px 20px;
-    border-bottom: 1px solid var(--border);
-    background: linear-gradient(180deg, var(--surface) 0%, transparent 100%);
-    display: flex;
-    align-items: flex-start;
-    justify-content: space-between;
-  }
-
-  .page-title { font-size: 26px; font-weight: 800; color: var(--text-bright); letter-spacing: -0.5px; }
-  .page-subtitle { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--text-dim); margin-top: 4px; letter-spacing: 0.5px; }
-
-  .status-chip {
-    display: inline-flex;
-    align-items: center;
-    gap: 5px;
-    padding: 4px 10px;
-    border-radius: 20px;
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 9px;
-    letter-spacing: 1px;
-    text-transform: uppercase;
-    font-weight: 700;
-  }
-
-  .chip-complete { background: rgba(57,255,20,0.1); color: var(--green); border: 1px solid rgba(57,255,20,0.2); }
-  .chip-wip { background: rgba(255,183,0,0.1); color: var(--amber); border: 1px solid rgba(255,183,0,0.2); }
-  .chip-planned { background: rgba(77,166,255,0.1); color: var(--blue); border: 1px solid rgba(77,166,255,0.2); }
-
-  .content { padding: 24px 32px; }
-
-  .card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    padding: 20px;
-    margin-bottom: 16px;
-    position: relative;
-    overflow: hidden;
-  }
-
-  .card::before {
-    content: '';
-    position: absolute;
-    left: 0; top: 0; bottom: 0;
-    width: 3px;
-    background: var(--green);
-  }
-
-  .card.amber::before { background: var(--amber); }
-  .card.blue::before { background: var(--blue); }
-  .card.purple::before { background: var(--purple); }
-  .card.red::before { background: var(--red); }
-  .card.dim::before { background: var(--border2); }
-
-  .card-title { font-size: 15px; font-weight: 700; color: var(--text-bright); margin-bottom: 4px; display: flex; align-items: center; gap: 8px; }
-  .card-meta { font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--text-dim); margin-bottom: 12px; letter-spacing: 0.5px; }
-  .card-body { font-size: 13px; line-height: 1.7; color: var(--text); }
-
-  .code-block {
-    background: #080a0d;
-    border: 1px solid var(--border2);
-    border-radius: var(--radius);
-    padding: 14px 16px;
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 11px;
-    color: #a8ff78;
-    line-height: 1.8;
-    margin: 10px 0;
-    overflow-x: auto;
-  }
-
-  .code-block .comment { color: var(--text-dim); }
-  .code-block .cmd { color: var(--green); }
-  .code-block .val { color: var(--amber); }
-  .code-block .key { color: var(--blue); }
-
-  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
-  .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 14px; }
-
-  .spec-table { width: 100%; border-collapse: collapse; margin-top: 10px; }
-  .spec-table tr { border-bottom: 1px solid var(--border); }
-  .spec-table tr:last-child { border-bottom: none; }
-  .spec-table td { padding: 8px 4px; font-size: 12px; vertical-align: top; }
-  .spec-table td:first-child { font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--text-dim); width: 35%; letter-spacing: 0.5px; }
-  .spec-table td:last-child { color: var(--text-bright); font-weight: 600; }
-
-  .steps { list-style: none; counter-reset: step; }
-  .steps li { counter-increment: step; display: flex; gap: 12px; align-items: flex-start; margin-bottom: 10px; font-size: 13px; line-height: 1.6; }
-  .steps li::before {
-    content: counter(step);
-    background: rgba(57,255,20,0.12);
-    color: var(--green);
-    border: 1px solid rgba(57,255,20,0.25);
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 10px;
-    font-weight: 700;
-    min-width: 22px;
-    height: 22px;
-    border-radius: 4px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-shrink: 0;
-    margin-top: 1px;
-  }
-
-  .tag { display: inline-block; padding: 2px 7px; border-radius: 3px; font-family: 'JetBrains Mono', monospace; font-size: 9px; letter-spacing: 0.5px; margin: 2px; font-weight: 600; }
-  .tag-green { background: rgba(57,255,20,0.1); color: var(--green); }
-  .tag-amber { background: rgba(255,183,0,0.1); color: var(--amber); }
-  .tag-blue { background: rgba(77,166,255,0.1); color: var(--blue); }
-  .tag-purple { background: rgba(168,85,247,0.1); color: var(--purple); }
-  .tag-red { background: rgba(255,71,87,0.1); color: var(--red); }
-
-  .roadmap-item { display: flex; gap: 16px; margin-bottom: 20px; position: relative; }
-  .roadmap-item::before { content: ''; position: absolute; left: 11px; top: 28px; bottom: -12px; width: 1px; background: var(--border2); }
-  .roadmap-item:last-child::before { display: none; }
-  .roadmap-icon { width: 24px; height: 24px; border-radius: 50%; flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-size: 10px; margin-top: 2px; z-index: 1; }
-  .icon-done { background: rgba(57,255,20,0.15); border: 1px solid var(--green); color: var(--green); }
-  .icon-next { background: rgba(255,183,0,0.15); border: 1px solid var(--amber); color: var(--amber); }
-  .icon-future { background: var(--surface2); border: 1px solid var(--border2); color: var(--text-dim); }
-  .roadmap-content { flex: 1; }
-  .roadmap-title { font-size: 14px; font-weight: 700; color: var(--text-bright); margin-bottom: 3px; }
-  .roadmap-desc { font-size: 12px; color: var(--text-dim); line-height: 1.6; }
-
-  .section-divider {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 10px;
-    color: var(--text-dim);
-    letter-spacing: 3px;
-    text-transform: uppercase;
-    margin: 24px 0 12px;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-  }
-  .section-divider::after { content: ''; flex: 1; height: 1px; background: var(--border); }
-
-  .domain-row { display: flex; align-items: center; padding: 8px 12px; border-radius: var(--radius); margin-bottom: 4px; background: var(--surface2); border: 1px solid var(--border); gap: 12px; font-size: 12px; }
-  .domain-url { font-family: 'JetBrains Mono', monospace; color: var(--green); font-size: 11px; flex: 1; }
-  .domain-svc { color: var(--text-dim); font-size: 11px; }
-  .live-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--green); box-shadow: 0 0 8px var(--green); flex-shrink: 0; animation: pulse 2s infinite; }
-  @keyframes pulse { 0%,100%{ opacity:1; } 50%{ opacity:0.4; } }
-
-  .stat-row { display: flex; gap: 12px; margin-bottom: 16px; }
-  .stat-card { flex: 1; background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 14px 16px; text-align: center; }
-  .stat-val { font-size: 28px; font-weight: 800; color: var(--green); font-family: 'JetBrains Mono', monospace; line-height: 1; }
-  .stat-label { font-size: 11px; color: var(--text-dim); margin-top: 4px; letter-spacing: 0.5px; }
-
-  .info-box { background: rgba(77,166,255,0.06); border: 1px solid rgba(77,166,255,0.2); border-radius: var(--radius); padding: 12px 14px; font-size: 12px; line-height: 1.7; color: var(--text); margin: 10px 0; }
-  .info-box .info-label { font-family: 'JetBrains Mono', monospace; font-size: 9px; color: var(--blue); letter-spacing: 2px; text-transform: uppercase; margin-bottom: 5px; }
-
-  .warn-box { background: rgba(255,183,0,0.06); border: 1px solid rgba(255,183,0,0.2); border-radius: var(--radius); padding: 12px 14px; font-size: 12px; line-height: 1.7; color: var(--text); margin: 10px 0; }
-  .warn-box .warn-label { font-family: 'JetBrains Mono', monospace; font-size: 9px; color: var(--amber); letter-spacing: 2px; text-transform: uppercase; margin-bottom: 5px; }
-
-  ::-webkit-scrollbar { width: 5px; }
-  ::-webkit-scrollbar-track { background: transparent; }
-  ::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 3px; }
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GonzoTech | Home Lab</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
+<div class="page-wrap">
 
-<div class="layout">
+<!-- ====== HEADER ====== -->
+<header>
+    <div class="header-inner">
+        <div class="logo-block">
+            <div class="logo-icon">G</div>
+            <span class="logo-name">GonzoTech</span>
+        </div>
+        <nav>
+            <button class="tab-btn active" onclick="showTab('home', this)">Home</button>
+            <button class="tab-btn" onclick="showTab('services', this)">Services</button>
+            <button class="tab-btn" onclick="showTab('projects', this)">Projects</button>
+            <button class="tab-btn" onclick="showTab('automation', this)">Automation</button>
+            <button class="tab-btn" onclick="showTab('contact', this)">Contact</button>
+        </nav>
+        <div class="header-cta">
+            <a href="/docs/" target="_blank">Technical Docs →</a>
+        </div>
+    </div>
+</header>
 
-  <!-- SIDEBAR -->
-  <nav class="sidebar">
-    <div class="logo-block">
-      <div class="logo-text">// HOMELAB DOCS</div>
-      <div class="logo-title">Gonzo<span>Tech</span></div>
-      <div class="logo-sub">SELF-HOSTED HOMELAB</div>
+<!-- ====== HOME ====== -->
+<div id="home" class="content-section active">
+
+    <!-- Hero -->
+    <div class="hero">
+        <div class="hero-eyebrow">All systems operational</div>
+        <h1 class="hero-title">A self-hosted lab<br>built from <span>scratch</span>.</h1>
+        <p class="hero-sub">GonzoTech is a personal home lab running on TrueNAS — hosting everything from media streaming and photo backups to retro gaming and remote development. All privately owned, self-managed, and accessible from anywhere.</p>
+        <div class="hero-actions">
+            <button class="btn-primary" onclick="showTab('services', document.querySelectorAll('.tab-btn')[1])">Explore Services</button>
+            <button class="btn-secondary" onclick="showTab('projects', document.querySelectorAll('.tab-btn')[2])">View Projects</button>
+        </div>
     </div>
 
-    <div class="nav-section" style="margin-top:12px;">
-      <div class="nav-label">Completed</div>
-      <div class="nav-item active" onclick="showPage('overview', this)"><div class="nav-dot dot-green"></div>Overview</div>
-      <div class="nav-item" onclick="showPage('infrastructure', this)"><div class="nav-dot dot-green"></div>Infrastructure</div>
-      <div class="nav-item" onclick="showPage('network', this)"><div class="nav-dot dot-green"></div>Network &amp; Access</div>
-      <div class="nav-item" onclick="showPage('arrstack', this)"><div class="nav-dot dot-green"></div>ARR Stack</div>
-      <div class="nav-item" onclick="showPage('jellyfin', this)"><div class="nav-dot dot-green"></div>Jellyfin</div>
-      <div class="nav-item" onclick="showPage('immich', this)"><div class="nav-dot dot-green"></div>Immich</div>
-      <div class="nav-item" onclick="showPage('romm', this)"><div class="nav-dot dot-green"></div>Romm</div>
-      <div class="nav-item" onclick="showPage('monitoring', this)"><div class="nav-dot dot-green"></div>Monitoring</div>
-      <div class="nav-item" onclick="showPage('codeserver', this)"><div class="nav-dot dot-green"></div>Code-Server</div>
-      <div class="nav-item" onclick="showPage('tailscale', this)"><div class="nav-dot dot-green"></div>Tailscale VPN</div>
-    </div>
-
-    <div class="nav-section" style="margin-top:8px;">
-      <div class="nav-label">In Progress</div>
-      <div class="nav-item" onclick="showPage('authentik', this)"><div class="nav-dot dot-amber"></div>Authentik SSO</div>
-    </div>
-
-    <div class="nav-section" style="margin-top:8px;">
-      <div class="nav-label">Roadmap</div>
-      <div class="nav-item" onclick="showPage('roadmap', this)"><div class="nav-dot dot-amber"></div>Roadmap</div>
-      <div class="nav-item" onclick="showPage('recommendations', this)"><div class="nav-dot dot-blue"></div>Recommendations</div>
-      <div class="nav-item" onclick="showPage('datasets', this)"><div class="nav-dot dot-purple"></div>Dataset Guide</div>
-    </div>
-
-    <div class="sidebar-footer">
-      LAST UPDATED: 2026-04-03<br>
-      VERSION: 3.0<br>
-      STATUS: <span style="color:var(--green)">● OPERATIONAL</span>
-    </div>
-  </nav>
-
-  <!-- MAIN -->
-  <main class="main">
-
-    <!-- OVERVIEW -->
-    <div id="page-overview" class="page active">
-      <div class="page-header">
-        <div>
-          <div class="page-title">GonzoTech Homelab</div>
-          <div class="page-subtitle">// COMPLETE SYSTEM DOCUMENTATION &amp; ROADMAP</div>
-        </div>
-        <span class="status-chip chip-complete">● OPERATIONAL</span>
-      </div>
-      <div class="content">
-        <div class="stat-row">
-          <div class="stat-card"><div class="stat-val">11</div><div class="stat-label">Active Services</div></div>
-          <div class="stat-card"><div class="stat-val">5</div><div class="stat-label">Domains Live</div></div>
-          <div class="stat-card"><div class="stat-val" style="color:var(--amber)">2.3K</div><div class="stat-label">ROMs Catalogued</div></div>
-          <div class="stat-card"><div class="stat-val" style="color:var(--blue)">3TB</div><div class="stat-label">Media Storage</div></div>
-        </div>
-
-        <div class="section-divider">Mission</div>
-        <div class="card">
-          <div class="card-body">GonzoTech is a fully self-hosted homelab providing a complete media, gaming, photo management, and development ecosystem. All services are accessible remotely via Cloudflare tunnels under the <span style="color:var(--green);font-family:'JetBrains Mono',monospace">gonzotech.us</span> domain with zero port forwarding required. The philosophy: self-sufficient, private, and always learning.</div>
-        </div>
-
-        <div class="section-divider">Active Services</div>
-        <div class="grid-3">
-          <div class="card"><div class="card-title">🎬 Jellyfin</div><div class="card-body" style="font-size:12px;">Media server with hardware transcoding and GonzoTech custom CSS branding.</div><div style="margin-top:8px"><span class="tag tag-green">watch.gonzotech.us</span></div></div>
-          <div class="card amber"><div class="card-title">📺 ARR Stack</div><div class="card-body" style="font-size:12px;">Automated media acquisition via VPN-protected qBittorrent, Sonarr, Radarr, Prowlarr.</div><div style="margin-top:8px"><span class="tag tag-amber">VPN Protected</span></div></div>
-          <div class="card blue"><div class="card-title">🌅 Immich</div><div class="card-body" style="font-size:12px;">Self-hosted Google Photos replacement with SMB external library integration.</div><div style="margin-top:8px"><span class="tag tag-blue">photos.gonzotech.us</span></div></div>
-          <div class="card purple"><div class="card-title">🕹️ Romm</div><div class="card-body" style="font-size:12px;">ROM manager with 2,319 games across 19 platforms, IGDB metadata integration.</div><div style="margin-top:8px"><span class="tag tag-purple">play.gonzotech.us</span></div></div>
-          <div class="card"><div class="card-title">💻 Code-Server</div><div class="card-body" style="font-size:12px;">Browser-based VS Code for managing configs, compose files, and scripts from anywhere.</div><div style="margin-top:8px"><span class="tag tag-green">Internal</span></div></div>
-          <div class="card amber"><div class="card-title">📊 Uptime Kuma</div><div class="card-body" style="font-size:12px;">Service monitoring with grouped public status page for all GonzoTech services.</div><div style="margin-top:8px"><span class="tag tag-amber">status.gonzotech.us</span></div></div>
-          <div class="card"><div class="card-title">🔒 Tailscale VPN</div><div class="card-body" style="font-size:12px;">WireGuard mesh VPN for secure private access to admin services from any device, anywhere.</div><div style="margin-top:8px"><span class="tag tag-green">Tailscale VPN</span></div></div>
-          <div class="card amber"><div class="card-title">🛡️ Authentik</div><div class="card-body" style="font-size:12px;">Self-hosted identity provider — SSO and MFA for all public services via Cloudflare Zero Trust.</div><div style="margin-top:8px"><span class="tag tag-amber">In Progress</span></div></div>
-        </div>
-
-        <div class="section-divider">Key Principles</div>
-        <div class="card dim">
-          <div class="card-body">
-            <ul style="list-style:none;display:flex;flex-direction:column;gap:8px;">
-              <li style="display:flex;gap:8px;font-size:12px;"><span style="color:var(--green)">›</span> Always create storage datasets via the management UI before running setup scripts — prevents permission conflicts</li>
-              <li style="display:flex;gap:8px;font-size:12px;"><span style="color:var(--green)">›</span> Admin interfaces are never publicly exposed — private access only via Tailscale VPN</li>
-              <li style="display:flex;gap:8px;font-size:12px;"><span style="color:var(--green)">›</span> All public services are protected by Cloudflare Zero Trust — auth layer coming via Authentik SSO</li>
-              <li style="display:flex;gap:8px;font-size:12px;"><span style="color:var(--green)">›</span> Download traffic routes through VPN — home IP is never exposed to the internet</li>
-              <li style="display:flex;gap:8px;font-size:12px;"><span style="color:var(--green)">›</span> Quality profiles are manually tuned after each sync to balance quality and availability</li>
-              <li style="display:flex;gap:8px;font-size:12px;"><span style="color:var(--green)">›</span> Hardlink-compatible folder structure ensures zero duplicate storage across the media pipeline</li>
-            </ul>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- INFRASTRUCTURE -->
-    <div id="page-infrastructure" class="page">
-      <div class="page-header">
-        <div><div class="page-title">Infrastructure</div><div class="page-subtitle">// HARDWARE · STORAGE · DOCKER</div></div>
-        <span class="status-chip chip-complete">● Complete</span>
-      </div>
-      <div class="content">
-        <div class="section-divider">Hardware</div>
-        <div class="grid-2">
-          <div class="card">
-            <div class="card-title">🖥️ Host System</div>
-            <div class="card-meta">SMALL FORM FACTOR NAS BUILD</div>
-            <table class="spec-table">
-              <tr><td>CPU</td><td>Intel (iGPU hardware transcoding)</td></tr>
-              <tr><td>RAM</td><td>16GB DDR4</td></tr>
-              <tr><td>NIC</td><td>2.5G Ethernet</td></tr>
-              <tr><td>Form Factor</td><td>Small Form Factor (SFF)</td></tr>
-            </table>
-          </div>
-          <div class="card amber">
-            <div class="card-title">💾 Storage Pools</div>
-            <div class="card-meta">POOL LAYOUT</div>
-            <table class="spec-table">
-              <tr><td>tank</td><td>3TB HDD — Media &amp; Torrents</td></tr>
-              <tr><td>storage</td><td>SSD — App Configs &amp; Fast I/O</td></tr>
-              <tr><td>Media Path</td><td>/data/media/</td></tr>
-              <tr><td>Torrent Path</td><td>/data/torrents/</td></tr>
-              <tr><td>Config Path</td><td>/configs/</td></tr>
-            </table>
-          </div>
-        </div>
-
-        <div class="section-divider">Folder Structure (Hardlink-Compatible)</div>
-        <div class="card">
-          <div class="card-meta">The hardlink layout ensures qBittorrent seeds while Sonarr/Radarr manage files — no duplicate storage.</div>
-          <div class="code-block">
-<span class="comment"># Hardlink-compatible media structure on tank pool</span>
-/mnt/tank/data/
-├── <span class="key">media/</span>
-│   ├── movies/          <span class="comment"># Radarr managed</span>
-│   └── tv/              <span class="comment"># Sonarr managed</span>
-└── <span class="key">torrents/</span>
-    ├── movies/          <span class="comment"># qBittorrent downloads</span>
-    └── tv/
-
-<span class="comment"># Config storage on SSD pool</span>
-/mnt/storage/configs/
-├── jellyfin/
-├── sonarr/
-├── radarr/
-├── prowlarr/
-├── qbittorrent/
-├── immich/
-├── romm/
-├── code-server/
-└── uptime-kuma/
-          </div>
-          <div class="info-box">
-            <div class="info-label">💡 Why Hardlinks Matter</div>
-            When qBittorrent finishes a download, Sonarr/Radarr create a hardlink instead of copying the file. The "copy" in /media/ and the original in /torrents/ share the same disk blocks — you get two directory entries for the price of one file. Seeding continues while your library is organized.
-          </div>
-        </div>
-
-        <div class="section-divider">Docker Stack Manager</div>
-        <div class="card blue">
-          <div class="card-title">🐋 Dockge</div>
-          <div class="card-meta">PRIMARY CONTAINER MANAGEMENT PLATFORM</div>
-          <div class="card-body">Dockge is the preferred stack manager for all GonzoTech containers. It provides a clean web UI for managing docker-compose stacks, viewing logs, and controlling containers. All services are defined as compose stacks and managed through Dockge unless a service has compelling reasons to run bare metal.</div>
-        </div>
-      </div>
-    </div>
-
-    <!-- NETWORK -->
-    <div id="page-network" class="page">
-      <div class="page-header">
-        <div><div class="page-title">Network &amp; Access</div><div class="page-subtitle">// CLOUDFLARE TUNNELS · DNS · DOMAINS</div></div>
-        <span class="status-chip chip-complete">● Complete</span>
-      </div>
-      <div class="content">
-        <div class="section-divider">Active Domains</div>
-        <div class="card">
-          <div class="card-meta">All services exposed via Cloudflare Zero Trust tunnels — no port forwarding required on the router</div>
-          <div style="margin-top:10px">
-            <div class="domain-row"><div class="live-dot"></div><div class="domain-url">watch.gonzotech.us</div><div class="domain-svc">→ Jellyfin</div><span class="tag tag-green">Media</span></div>
-            <div class="domain-row"><div class="live-dot"></div><div class="domain-url">requests.gonzotech.us</div><div class="domain-svc">→ Seerr</div><span class="tag tag-blue">Requests</span></div>
-            <div class="domain-row"><div class="live-dot"></div><div class="domain-url">photos.gonzotech.us</div><div class="domain-svc">→ Immich</div><span class="tag tag-blue">Photos</span></div>
-            <div class="domain-row"><div class="live-dot"></div><div class="domain-url">play.gonzotech.us</div><div class="domain-svc">→ Romm</div><span class="tag tag-purple">Gaming</span></div>
-            <div class="domain-row"><div class="live-dot"></div><div class="domain-url">status.gonzotech.us</div><div class="domain-svc">→ Uptime Kuma</div><span class="tag tag-amber">Monitoring</span></div>
-            <div class="domain-row"><div class="nav-dot dot-amber" style="animation:pulse 2s infinite"></div><div class="domain-url">auth.gonzotech.us</div><div class="domain-svc">→ Authentik SSO</div><span class="tag tag-amber">In Progress</span></div>
-          </div>
-        </div>
-
-        <div class="section-divider">How Cloudflare Tunnels Work</div>
-        <div class="card blue">
-          <div class="card-body" style="font-size:13px;">A <strong style="color:var(--text-bright)">Cloudflare Tunnel</strong> creates an outbound-only encrypted connection from the homelab server to Cloudflare's edge. Internet traffic hits Cloudflare first, then routes through the tunnel — the home IP is never exposed and no firewall ports need to be opened.</div>
-        </div>
-
-        <div class="section-divider">Docker DNS Fix for Cloudflare Domains</div>
-        <div class="warn-box">
-          <div class="warn-label">⚠️ Important</div>
-          By default, Docker containers use the host's DNS resolver, which may not resolve Cloudflare-managed custom domains internally. Always add explicit DNS servers to compose stacks that need to reach other services by domain name.
-        </div>
-        <div class="code-block">
-<span class="comment"># Add to any service that needs to resolve gonzotech.us internally</span>
-<span class="key">services:</span>
-  your-service:
-    dns:
-      - <span class="val">1.1.1.1</span>
-      - <span class="val">8.8.8.8</span>
-        </div>
-      </div>
-    </div>
-
-    <!-- ARR STACK -->
-    <div id="page-arrstack" class="page">
-      <div class="page-header">
-        <div><div class="page-title">ARR Stack</div><div class="page-subtitle">// AUTOMATED MEDIA ACQUISITION PIPELINE</div></div>
-        <span class="status-chip chip-complete">● Complete</span>
-      </div>
-      <div class="content">
-        <div class="section-divider">Pipeline Overview</div>
-        <div class="card amber">
-          <div class="card-body" style="font-size:13px;">Seerr → Sonarr/Radarr → Prowlarr → qBittorrent → <em>through Gluetun VPN tunnel</em> → Download → Hardlink to /media/ → Jellyfin picks up automatically</div>
-        </div>
-
-        <div class="section-divider">Services</div>
-        <div class="grid-2">
-          <div class="card">
-            <div class="card-title">🔒 VPN Gateway</div>
-            <div class="card-meta">ALL DOWNLOAD TRAFFIC VPN-PROTECTED</div>
-            <div class="card-body" style="font-size:12px;">All download traffic routes through a VPN gateway container. qBittorrent and other download services use the VPN's network namespace, meaning they can only access the internet through the encrypted tunnel.</div>
-            <div style="margin-top:8px"><span class="tag tag-green">network_mode: service:vpn</span></div>
-          </div>
-          <div class="card">
-            <div class="card-title">⬇️ qBittorrent</div>
-            <div class="card-meta">DOWNLOAD CLIENT</div>
-            <div class="card-body" style="font-size:12px;">Runs on Gluetun's network. All traffic is VPN-protected. Configured with the hardlink-compatible folder structure so downloads land in /torrents/ and Sonarr/Radarr hardlink to /media/.</div>
-            <div style="margin-top:8px"><span class="tag tag-green">network_mode: service:gluetun</span></div>
-          </div>
-          <div class="card blue">
-            <div class="card-title">🔍 Prowlarr</div>
-            <div class="card-meta">INDEXER MANAGER</div>
-            <div class="card-body" style="font-size:12px;">Central indexer hub that syncs trackers to both Sonarr and Radarr. Manages all tracker credentials in one place rather than duplicating across arr apps.</div>
-          </div>
-          <div class="card blue">
-            <div class="card-title">🕷️ FlareSolverr</div>
-            <div class="card-meta">CLOUDFLARE BYPASS</div>
-            <div class="card-body" style="font-size:12px;">Solves Cloudflare challenges for indexers that use bot protection. Prowlarr routes requests through FlareSolverr when needed to access protected tracker sites.</div>
-          </div>
-          <div class="card">
-            <div class="card-title">📡 Sonarr</div>
-            <div class="card-meta">TV SERIES MANAGER · TRaSH: WEB-1080p</div>
-            <div class="card-body" style="font-size:12px;">Monitors and automatically downloads TV shows. Quality profile synced from TRaSH Guides via Recyclarr.</div>
-          </div>
-          <div class="card">
-            <div class="card-title">🎬 Radarr</div>
-            <div class="card-meta">MOVIE MANAGER · TRaSH: HD Bluray + WEB</div>
-            <div class="card-body" style="font-size:12px;">Monitors and automatically downloads movies. Quality profile synced from TRaSH Guides via Recyclarr.</div>
-          </div>
-        </div>
-
-        <div class="section-divider">Recyclarr (TRaSH Guides Sync)</div>
-        <div class="card purple">
-          <div class="card-title">♻️ Recyclarr</div>
-          <div class="card-body" style="font-size:12px;">Automatically syncs TRaSH Guide quality profiles and custom formats to Sonarr and Radarr. Keeps quality settings current without manual maintenance.</div>
-          <div class="code-block" style="margin-top:10px;font-size:10px;">
-<span class="comment"># Key tuning applied after initial sync:</span>
-<span class="comment"># - Minimum custom format score: -10000 (broader compatibility)</span>
-<span class="comment"># - Quality size minimums lowered (prevents blocking smaller releases)</span>
-<span class="comment"># - YTS releases: acceptable despite LQ flag for certain content</span>
-          </div>
-          <div class="warn-box" style="margin-top:10px;">
-            <div class="warn-label">⚠️ Post-Sync Required</div>
-            Always review quality profile settings after a Recyclarr sync. Default TRaSH profiles can block common releases with oversized minimum file size thresholds and strict custom format scoring.
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- JELLYFIN -->
-    <div id="page-jellyfin" class="page">
-      <div class="page-header">
-        <div><div class="page-title">Jellyfin</div><div class="page-subtitle">// SELF-HOSTED MEDIA SERVER · watch.gonzotech.us</div></div>
-        <span class="status-chip chip-complete">● Complete</span>
-      </div>
-      <div class="content">
-        <div class="grid-2">
-          <div class="card">
-            <div class="card-title">⚡ Intel QuickSync</div>
-            <div class="card-meta">HARDWARE TRANSCODING</div>
-            <div class="card-body" style="font-size:12px;">The integrated GPU handles hardware-accelerated video transcoding via Intel QuickSync. This offloads H.264/H.265 transcoding from the CPU, allowing multiple simultaneous streams without taxing the system.</div>
-            <div class="code-block" style="margin-top:10px;font-size:10px;">
-<span class="comment"># Device passthrough in compose:</span>
-devices:
-  - <span class="val">/dev/dri/renderD128:/dev/dri/renderD128</span>
-group_add:
-  - <span class="val">"109"</span> <span class="comment"># render group</span>
+    <!-- Stats -->
+    <div class="stats-section">
+        <div class="stats-grid">
+            <div class="stat-item">
+                <div class="stat-val">9</div>
+                <div class="stat-label">Active Services</div>
             </div>
-          </div>
-          <div class="card amber">
-            <div class="card-title">🎨 GonzoTech Branding</div>
-            <div class="card-meta">CUSTOM CSS THEME</div>
-            <div class="card-body" style="font-size:12px;">Custom CSS applied to the Jellyfin interface to give it a GonzoTech branded look and feel. Applied via Jellyfin's Custom CSS setting in Dashboard → General.</div>
-          </div>
-        </div>
-
-        <div class="section-divider">Installed Plugins</div>
-        <div class="card">
-          <div class="card-title">🔌 Intro Skipper</div>
-          <div class="card-meta">AUTO SKIP INTROS &amp; CREDITS</div>
-          <div class="card-body" style="font-size:12px;">Automatically detects and enables skipping of TV show intros and credit sequences. Analyzes audio fingerprints to detect repeated segments across episodes, then adds skip buttons (or auto-skips) in the Jellyfin player.</div>
-        </div>
-
-        <div class="section-divider">Library Structure</div>
-        <div class="code-block">
-/mnt/tank/data/media/
-├── movies/     <span class="comment"># Radarr drops here → Jellyfin Movies library</span>
-└── tv/         <span class="comment"># Sonarr drops here → Jellyfin TV Shows library</span>
-        </div>
-      </div>
-    </div>
-
-    <!-- IMMICH -->
-    <div id="page-immich" class="page">
-      <div class="page-header">
-        <div><div class="page-title">Immich</div><div class="page-subtitle">// SELF-HOSTED PHOTO MANAGEMENT · photos.gonzotech.us</div></div>
-        <span class="status-chip chip-complete">● Complete</span>
-      </div>
-      <div class="content">
-        <div class="card blue">
-          <div class="card-title">🌅 Immich Overview</div>
-          <div class="card-body">A self-hosted Google Photos alternative with facial recognition, smart search, mobile backup apps, and an album-sharing system. Running in Docker via Dockge with an SMB external library connected to enable browsing of existing photo collections without re-importing.</div>
-        </div>
-
-        <div class="section-divider">Configuration</div>
-        <div class="grid-2">
-          <div class="card">
-            <div class="card-title">📁 SMB External Library</div>
-            <div class="card-body" style="font-size:12px;">An external library is connected via SMB share, allowing Immich to index and serve photos that live on a network share without physically moving or copying them into the Immich data directory.</div>
-          </div>
-          <div class="card">
-            <div class="card-title">🐋 Stack Components</div>
-            <div class="card-body" style="font-size:12px;">
-              <span class="tag tag-blue">immich-server</span>
-              <span class="tag tag-blue">immich-microservices</span>
-              <span class="tag tag-blue">immich-machine-learning</span>
-              <span class="tag tag-blue">redis</span>
-              <span class="tag tag-blue">postgres</span>
+            <div class="stat-item">
+                <div class="stat-val">6</div>
+                <div class="stat-label">Custom Domains</div>
             </div>
-          </div>
-        </div>
-
-        <div class="section-divider">Mobile Backup Setup</div>
-        <div class="info-box">
-          <div class="info-label">📱 iOS / Android App</div>
-          Install the Immich mobile app and point it to <code style="font-family:'JetBrains Mono',monospace">https://photos.gonzotech.us</code>. Enable automatic background upload to back up all phone photos directly to your homelab — no Google/iCloud required.
-        </div>
-      </div>
-    </div>
-
-    <!-- ROMM -->
-    <div id="page-romm" class="page">
-      <div class="page-header">
-        <div><div class="page-title">Romm</div><div class="page-subtitle">// ROM MANAGER &amp; GAME LIBRARY · play.gonzotech.us</div></div>
-        <span class="status-chip chip-complete">● Complete</span>
-      </div>
-      <div class="content">
-        <div class="stat-row">
-          <div class="stat-card"><div class="stat-val" style="color:var(--purple)">2,319</div><div class="stat-label">Games Catalogued</div></div>
-          <div class="stat-card"><div class="stat-val" style="color:var(--purple)">19</div><div class="stat-label">Platforms</div></div>
-          <div class="stat-card"><div class="stat-val" style="color:var(--green)">✓</div><div class="stat-label">IGDB Connected</div></div>
-        </div>
-        <div class="card purple">
-          <div class="card-title">🕹️ Romm Overview</div>
-          <div class="card-body">A beautiful self-hosted ROM manager that automatically fetches metadata, cover art, screenshots, and descriptions from IGDB. Supports web-based emulation via EmulatorJS, allowing games to be played directly in the browser.</div>
-        </div>
-
-        <div class="section-divider">Setup Details</div>
-        <div class="grid-2">
-          <div class="card purple">
-            <div class="card-title">🗄️ Database</div>
-            <div class="card-meta">MARIADB BACKEND</div>
-            <div class="card-body" style="font-size:12px;">Romm uses MariaDB for its database backend. The MariaDB container runs in the same Dockge stack as Romm, connected via an internal Docker network.</div>
-          </div>
-          <div class="card purple">
-            <div class="card-title">🎮 IGDB API</div>
-            <div class="card-meta">TWITCH DEVELOPER PORTAL</div>
-            <div class="card-body" style="font-size:12px;">Metadata and cover art are fetched from IGDB (Internet Games Database). API credentials obtained via the Twitch Developer Portal. Client ID and Client Secret configured in Romm settings.</div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- MONITORING -->
-    <div id="page-monitoring" class="page">
-      <div class="page-header">
-        <div><div class="page-title">Monitoring</div><div class="page-subtitle">// UPTIME KUMA · status.gonzotech.us</div></div>
-        <span class="status-chip chip-complete">● Complete</span>
-      </div>
-      <div class="content">
-        <div class="card amber">
-          <div class="card-title">📊 Uptime Kuma</div>
-          <div class="card-body">Self-hosted uptime monitoring with a public status page. All GonzoTech services are tracked and grouped by category. Alerts can be configured for downtime notifications via various channels (Discord, Telegram, email, etc.).</div>
-        </div>
-
-        <div class="section-divider">Monitored Services</div>
-        <div class="grid-2">
-          <div class="card">
-            <div class="card-body" style="font-size:12px;">
-              <div style="margin-bottom:6px"><span class="tag tag-green">● Jellyfin</span> watch.gonzotech.us</div>
-              <div style="margin-bottom:6px"><span class="tag tag-green">● Seerr</span> requests.gonzotech.us</div>
-              <div style="margin-bottom:6px"><span class="tag tag-green">● Immich</span> photos.gonzotech.us</div>
-              <div style="margin-bottom:6px"><span class="tag tag-purple">● Romm</span> play.gonzotech.us</div>
-              <div style="margin-bottom:6px"><span class="tag tag-amber">● TrueNAS</span> Tailscale VPN</div>
-              <div><span class="tag tag-blue">● qBittorrent</span> Internal IP</div>
+            <div class="stat-item">
+                <div class="stat-val">2.3K</div>
+                <div class="stat-label">ROMs Catalogued</div>
             </div>
-          </div>
-          <div class="card">
-            <div class="card-title">💡 Internal IP Monitoring</div>
-            <div class="card-body" style="font-size:12px;">Services that don't resolve via Cloudflare internally (like qBittorrent behind Gluetun) are monitored via their internal Docker IP/port rather than domain name. This is the reliable approach when custom DNS resolution inside Docker is a challenge.</div>
-          </div>
+            <div class="stat-item">
+                <div class="stat-val">3TB</div>
+                <div class="stat-label">Media Storage</div>
+            </div>
         </div>
-      </div>
     </div>
 
-    <!-- CODE-SERVER -->
-    <div id="page-codeserver" class="page">
-      <div class="page-header">
-        <div><div class="page-title">Code-Server</div><div class="page-subtitle">// BROWSER VS CODE · DEV ENVIRONMENT</div></div>
-        <span class="status-chip chip-complete">● Complete</span>
-      </div>
-      <div class="content">
-        <div class="card blue">
-          <div class="card-title">💻 Code-Server Overview</div>
-          <div class="card-body">VS Code running in the browser, accessible from any device. Used for editing docker-compose stacks, config files, shell scripts, and general homelab management without needing SSH access or a dedicated machine.</div>
+    <!-- What's running -->
+    <div class="section">
+        <div class="section-header">
+            <div class="section-label">What's running</div>
+            <h2 class="section-title">Core services</h2>
+            <p class="section-desc">Everything runs in Docker containers managed through Dockge, exposed securely via Cloudflare tunnels — no open ports, no dynamic DNS headaches.</p>
         </div>
-        <div class="section-divider">Configuration</div>
-        <div class="code-block">
-<span class="comment"># Code-Server compose key settings</span>
-<span class="key">PUID</span>=<span class="val">1000</span>
-<span class="key">PGID</span>=<span class="val">1000</span>
-<span class="key">config</span>=/mnt/storage/configs/code-server
+        <div class="services-grid">
+            <div class="service-card">
+                <span class="service-icon">🎬</span>
+                <div class="service-name">Jellyfin</div>
+                <div class="service-desc">Personal media server with hardware-accelerated streaming. Movies, TV shows, and custom branding — all yours.</div>
+                <a href="https://watch.gonzotech.us" target="_blank" class="service-link">watch.gonzotech.us →</a>
+            </div>
+            <div class="service-card">
+                <span class="service-icon">📸</span>
+                <div class="service-name">Immich</div>
+                <div class="service-desc">Self-hosted photo and video backup. Full control over your memories — no subscription, no third-party storage.</div>
+                <a href="https://photos.gonzotech.us" target="_blank" class="service-link">photos.gonzotech.us →</a>
+            </div>
+            <div class="service-card">
+                <span class="service-icon">🎮</span>
+                <div class="service-name">Romm</div>
+                <div class="service-desc">A growing library of 2,300+ retro games across 19 platforms, beautifully organized with full metadata.</div>
+                <a href="https://play.gonzotech.us" target="_blank" class="service-link">play.gonzotech.us →</a>
+            </div>
+            <div class="service-card">
+                <span class="service-icon">📡</span>
+                <div class="service-name">Media Requests</div>
+                <div class="service-desc">Request new movies or TV shows and they're automatically downloaded and added to the library.</div>
+                <a href="https://requests.gonzotech.us" target="_blank" class="service-link">requests.gonzotech.us →</a>
+            </div>
+            <div class="service-card">
+                <span class="service-icon">📊</span>
+                <div class="service-name">Status Page</div>
+                <div class="service-desc">Live uptime monitoring for all services. See what's online at a glance with automatic health checks.</div>
+                <a href="https://status.gonzotech.us" target="_blank" class="service-link">status.gonzotech.us →</a>
+            </div>
+            <div class="service-card">
+                <span class="service-icon">💻</span>
+                <div class="service-name">Code-Server</div>
+                <div class="service-desc">Full VS Code environment in the browser. Manage configs and work on projects from any device.</div>
+                <a href="#" class="service-link">Internal access →</a>
+            </div>
         </div>
-        <div class="info-box">
-          <div class="info-label">💡 Pro Tip</div>
-          Mount your entire /mnt/storage/configs/ directory into Code-Server so you can edit any app's compose file or config directly from the browser. Makes homelab management possible from a phone or tablet.
-        </div>
-      </div>
     </div>
 
-    <!-- DATASET GUIDE -->
-    <div id="page-datasets" class="page">
-      <div class="page-header">
-        <div><div class="page-title">Dataset Guide</div><div class="page-subtitle">// TRUENAS BEST PRACTICES FOR NEW APPS</div></div>
-        <span class="status-chip chip-complete">● Reference</span>
-      </div>
-      <div class="content">
-        <div class="info-box">
-          <div class="info-label">📌 Golden Rule</div>
-          Always create datasets in the Storage UI FIRST, before running any bash scripts to create subfolders or set permissions. Creating datasets via bash can conflict with existing ACLs and cause permission errors.
-        </div>
-
-        <div class="section-divider">Step 1 — Create Dataset via TrueNAS UI</div>
-        <div class="card">
-          <div class="card-body" style="font-size:13px;">
-            <ol class="steps">
-              <li>Go to <strong style="color:var(--text-bright)">Storage</strong> in the management UI sidebar</li>
-              <li>Click the <strong style="color:var(--text-bright)">⋮ (three dots)</strong> next to the pool you want (tank or storage) → <strong>Add Dataset</strong></li>
-              <li>Set <strong style="color:var(--text-bright)">Name</strong> — e.g. <code style="font-family:'JetBrains Mono',monospace;color:var(--amber)">appname</code></li>
-              <li>Set <strong style="color:var(--text-bright)">Dataset Preset</strong> → <code style="font-family:'JetBrains Mono',monospace;color:var(--amber)">Apps</code></li>
-              <li>Leave <strong style="color:var(--text-bright)">ACL Type</strong> as <code style="font-family:'JetBrains Mono',monospace;color:var(--amber)">POSIX</code></li>
-              <li>Leave <strong style="color:var(--text-bright)">Compression</strong> as <code style="font-family:'JetBrains Mono',monospace;color:var(--amber)">lz4</code></li>
-              <li>Click <strong style="color:var(--text-bright)">Save</strong></li>
-            </ol>
-          </div>
-        </div>
-
-        <div class="section-divider">Step 2 — Bash Setup (After Dataset Created)</div>
-        <div class="code-block">
-<span class="comment"># Run as root to avoid ACL conflicts</span>
-<span class="cmd">sudo su</span>
-
-<span class="comment"># Create subdirectory structure</span>
-<span class="cmd">mkdir -p /mnt/storage/configs/myapp</span>
-
-<span class="comment"># Set ownership to match container PUID/PGID</span>
-<span class="cmd">chown -R 1000:1000 /mnt/storage/configs/myapp</span>
-
-<span class="comment"># Set permissions</span>
-<span class="cmd">chmod -R 755 /mnt/storage/configs/myapp</span>
-
-<span class="comment"># Verify</span>
-<span class="cmd">ls -la /mnt/storage/configs/</span>
-        </div>
-
-        <div class="section-divider">Dataset Settings Cheat Sheet</div>
-        <div class="card">
-          <table class="spec-table">
-            <tr><td>Compression</td><td>lz4 — Default, great for most uses. Fast + decent ratio.</td></tr>
-            <tr><td>ACL Type</td><td>POSIX — Best for Docker containers (matches Linux permissions model)</td></tr>
-            <tr><td>Case Sensitivity</td><td>Sensitive — Keep default unless Windows SMB shares need it</td></tr>
-            <tr><td>Quota</td><td>Optional — Set on media datasets to prevent runaway disk usage</td></tr>
-            <tr><td>Sync</td><td>Standard — Default. "Always" is safer but slower for large writes</td></tr>
-            <tr><td>Snapshot Task</td><td>Configure periodic snapshots on config datasets for easy rollback</td></tr>
-          </table>
-        </div>
-      </div>
-    </div>
-
-    <!-- ROADMAP -->
-    <div id="page-roadmap" class="page">
-      <div class="page-header">
-        <div><div class="page-title">Roadmap</div><div class="page-subtitle">// UPCOMING PROJECTS &amp; EXPANSIONS</div></div>
-        <span class="status-chip chip-wip">◐ In Progress</span>
-      </div>
-      <div class="content">
-        <div class="section-divider">Recently Completed</div>
-        <div class="roadmap-item">
-          <div class="roadmap-icon icon-done">✓</div>
-          <div class="roadmap-content">
-            <div class="roadmap-title">Jellyfin Plugin Suite</div>
-            <div class="roadmap-desc">Full plugin suite deployed — Intro Skipper, Merge Versions, Open Subtitles, Playback Reporting, Chapter Creator, Jellyfin-Enhanced, File Transformation, InPlayerEpisodePreview. Ultrachromic CSS theme and Trickplay previews active.</div>
-            <div style="margin-top:6px"><span class="tag tag-green">Complete</span><span class="tag tag-green">Jellyfin</span></div>
-          </div>
-        </div>
-        <div class="roadmap-item">
-          <div class="roadmap-icon icon-done">✓</div>
-          <div class="roadmap-content">
-            <div class="roadmap-title">Tailscale VPN</div>
-            <div class="roadmap-desc">WireGuard mesh VPN deployed. All admin services (storage UI, container manager, download client) moved off public exposure. All devices enrolled on axolotl-grouse.ts.net with MagicDNS and subnet routing active.</div>
-            <div style="margin-top:6px"><span class="tag tag-green">Complete 2026-04-03</span><span class="tag tag-green">Security</span></div>
-          </div>
-        </div>
-
-        <div class="section-divider">In Progress</div>
-        <div class="roadmap-item">
-          <div class="roadmap-icon icon-next">!</div>
-          <div class="roadmap-content">
-            <div class="roadmap-title">Authentik SSO</div>
-            <div class="roadmap-desc">Self-hosted identity provider deploying as the central auth layer for all public services. Google social login, MFA, and Cloudflare Zero Trust integration. Will protect watch, requests, photos, play, and status subdomains.</div>
-            <div style="margin-top:6px"><span class="tag tag-amber">In Progress</span><span class="tag tag-amber">Security</span></div>
-          </div>
-        </div>
-        <div class="roadmap-item">
-          <div class="roadmap-icon icon-next">!</div>
-          <div class="roadmap-content">
-            <div class="roadmap-title">AdGuard Home</div>
-            <div class="roadmap-desc">Network-wide ad and tracker blocking via DNS. Stack deployed, router DNS configuration pending.</div>
-            <div style="margin-top:6px"><span class="tag tag-amber">In Progress</span><span class="tag tag-amber">DNS</span></div>
-          </div>
-        </div>
-        <div class="roadmap-item">
-          <div class="roadmap-icon icon-next">!</div>
-          <div class="roadmap-content">
-            <div class="roadmap-title">Hardware Upgrade</div>
-            <div class="roadmap-desc">Upgrading to a purpose-built NAS case with mATX motherboard, expanded RAM, dedicated GPU for transcoding with AV1 support, PCIe HBA for additional drives in IT mode, and additional storage capacity with ZFS cache SSDs.</div>
-            <div style="margin-top:6px"><span class="tag tag-amber">Planned</span><span class="tag tag-amber">Hardware</span></div>
-          </div>
-        </div>
-
-        <div class="section-divider">Future Projects</div>
-        <div class="roadmap-item">
-          <div class="roadmap-icon icon-future">○</div>
-          <div class="roadmap-content">
-            <div class="roadmap-title">Automated Backup Strategy</div>
-            <div class="roadmap-desc">Implement 3-2-1 backup: periodic snapshots, off-site backup of config data to cloud (Backblaze B2), and ZFS replication to a second drive. Configs are small enough for free-tier cloud backup.</div>
-            <div style="margin-top:6px"><span class="tag tag-blue">Backup</span><span class="tag tag-blue">Resilience</span></div>
-          </div>
-        </div>
-        <div class="roadmap-item">
-          <div class="roadmap-icon icon-future">○</div>
-          <div class="roadmap-content">
-            <div class="roadmap-title">Homepage Dashboard</div>
-            <div class="roadmap-desc">A single landing page aggregating all GonzoTech services with live status, quick links, and service info widgets. Integrates with Uptime Kuma, Sonarr, Radarr, and more.</div>
-            <div style="margin-top:6px"><span class="tag tag-blue">Dashboard</span><span class="tag tag-blue">UX</span></div>
-          </div>
-        </div>
-        <div class="roadmap-item">
-          <div class="roadmap-icon icon-future">○</div>
-          <div class="roadmap-content">
-            <div class="roadmap-title">Scrutiny — Drive Health Monitoring</div>
-            <div class="roadmap-desc">S.M.A.R.T. monitoring dashboard for all drives. Catches early signs of drive failure before data loss. Runs as a Docker container with historical SMART data and failure risk scores.</div>
-            <div style="margin-top:6px"><span class="tag tag-blue">Monitoring</span><span class="tag tag-blue">Drives</span></div>
-          </div>
-        </div>
-        <div class="roadmap-item">
-          <div class="roadmap-icon icon-future">○</div>
-          <div class="roadmap-content">
-            <div class="roadmap-title">Home Assistant</div>
-            <div class="roadmap-desc">Gold standard self-hosted home automation hub. Integrates with thousands of smart home devices, runs powerful automations, and provides a beautiful dashboard accessible from any device.</div>
-            <div style="margin-top:6px"><span class="tag tag-blue">Automation</span><span class="tag tag-blue">Smart Home</span></div>
-          </div>
-        </div>
-        <div class="roadmap-item">
-          <div class="roadmap-icon icon-future">○</div>
-          <div class="roadmap-content">
-            <div class="roadmap-title">Nextcloud</div>
-            <div class="roadmap-desc">Self-hosted cloud storage, file sync, calendar, and contacts. A full Google Drive/Dropbox replacement that keeps data entirely within the homelab.</div>
-            <div style="margin-top:6px"><span class="tag tag-blue">Storage</span><span class="tag tag-blue">Sync</span></div>
-          </div>
-        </div>
-        <div class="roadmap-item">
-          <div class="roadmap-icon icon-future">○</div>
-          <div class="roadmap-content">
-            <div class="roadmap-title">Vaultwarden</div>
-            <div class="roadmap-desc">Self-hosted password manager compatible with all Bitwarden clients. Credentials never leave the homelab. Tiny resource footprint, easy to deploy alongside Authentik.</div>
-            <div style="margin-top:6px"><span class="tag tag-blue">Security</span><span class="tag tag-blue">Privacy</span></div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- RECOMMENDATIONS -->
-    <div id="page-recommendations" class="page">
-      <div class="page-header">
-        <div><div class="page-title">Recommendations</div><div class="page-subtitle">// SUGGESTED APPS TO EXPLORE</div></div>
-        <span class="status-chip chip-planned">◎ Ideas</span>
-      </div>
-      <div class="content">
-        <div class="section-divider">🔐 Security &amp; Access</div>
-        <div class="grid-2">
-          <div class="card amber"><div class="card-title">Authentik</div><div class="card-meta">SSO / IDENTITY PROVIDER</div><div class="card-body" style="font-size:12px;">Self-hosted identity provider providing SSO and MFA across all public services via Cloudflare Zero Trust. Deploying now — will protect all gonzotech.us subdomains.</div><div style="margin-top:8px"><span class="tag tag-amber">In Progress</span></div></div>
-          <div class="card"><div class="card-title">Vaultwarden</div><div class="card-meta">SELF-HOSTED BITWARDEN</div><div class="card-body" style="font-size:12px;">Host your own password manager. Compatible with all Bitwarden clients. Your passwords never leave your homelab. Tiny resource footprint.</div><div style="margin-top:8px"><span class="tag tag-green">High Priority</span></div></div>
-        </div>
-
-        <div class="section-divider">📊 Monitoring &amp; Observability</div>
-        <div class="grid-2">
-          <div class="card amber"><div class="card-title">Scrutiny</div><div class="card-meta">DRIVE HEALTH (S.M.A.R.T.)</div><div class="card-body" style="font-size:12px;">Web UI for monitoring hard drive S.M.A.R.T. data. Will alert you before a drive fails. Essential once you're storing TB of media you don't want to re-download.</div><div style="margin-top:8px"><span class="tag tag-amber">Recommended</span></div></div>
-          <div class="card amber"><div class="card-title">Netdata</div><div class="card-meta">REAL-TIME SYSTEM METRICS</div><div class="card-body" style="font-size:12px;">Real-time CPU, RAM, network, and disk I/O graphs. More granular than built-in system charts — useful for performance data during transcoding or heavy seeding.</div></div>
-        </div>
-
-        <div class="section-divider">🏠 Home Automation</div>
-        <div class="grid-2">
-          <div class="card blue"><div class="card-title">Home Assistant</div><div class="card-meta">HOME AUTOMATION HUB</div><div class="card-body" style="font-size:12px;">The gold standard for self-hosted home automation. Integrates with thousands of smart home devices, runs powerful automations, and has a beautiful dashboard.</div><div style="margin-top:8px"><span class="tag tag-blue">Popular</span></div></div>
-          <div class="card blue"><div class="card-title">Frigate</div><div class="card-meta">NVR + AI OBJECT DETECTION</div><div class="card-body" style="font-size:12px;">Self-hosted security camera NVR with real-time AI object detection. Works with existing IP cameras via RTSP. Integrates tightly with Home Assistant.</div></div>
-        </div>
-
-        <div class="section-divider">🎛️ Dashboard &amp; Landing</div>
-        <div class="grid-2">
-          <div class="card"><div class="card-title">Homepage</div><div class="card-meta">SERVICE DASHBOARD</div><div class="card-body" style="font-size:12px;">A clean, fast, highly customizable homelab dashboard. Shows live service status, active downloads, upcoming media from Sonarr/Radarr, and quick links to all apps. YAML configured.</div><div style="margin-top:8px"><span class="tag tag-green">Recommended</span></div></div>
-          <div class="card"><div class="card-title">Homarr</div><div class="card-meta">DRAG &amp; DROP DASHBOARD</div><div class="card-body" style="font-size:12px;">A more visual dashboard alternative with a drag-and-drop tile interface. Integrates with ARR apps to show download progress, upcoming releases, and service health — configurable from a web UI.</div></div>
-        </div>
-
-        <div class="section-divider">💾 Data &amp; Sync</div>
-        <div class="grid-2">
-          <div class="card purple"><div class="card-title">Nextcloud</div><div class="card-meta">SELF-HOSTED CLOUD STORAGE</div><div class="card-body" style="font-size:12px;">Your own Dropbox/Google Drive. File sync, sharing, calendar, contacts, notes, and a massive plugin ecosystem. Pairs well with Vaultwarden and Immich.</div></div>
-          <div class="card purple"><div class="card-title">Syncthing</div><div class="card-meta">P2P FILE SYNC</div><div class="card-body" style="font-size:12px;">Lightweight, decentralized file sync between devices. Great for keeping specific folders in sync between your homelab and laptop without a full cloud server setup.</div></div>
-        </div>
-
-        <div class="section-divider">🎮 Gaming Extras</div>
-        <div class="grid-2">
-          <div class="card purple"><div class="card-title">Sunshine + Moonlight</div><div class="card-meta">GAME STREAMING</div><div class="card-body" style="font-size:12px;">Stream PC games from any machine on your network (or remotely) to a phone, tablet, or TV. Sunshine is the open-source host; Moonlight is the client. Low latency when your hardware can handle it.</div></div>
-          <div class="card purple"><div class="card-title">Playnite Web</div><div class="card-meta">GAME LIBRARY BROWSER</div><div class="card-body" style="font-size:12px;">A web frontend for your Playnite game library. Tracks all your games across platforms and exposes that library as a web app accessible from your homelab domain.</div></div>
-        </div>
-      </div>
-    </div>
-
-    <!-- TAILSCALE -->
-    <div id="page-tailscale" class="page">
-      <div class="page-header">
-        <div><div class="page-title">Tailscale VPN</div><div class="page-subtitle">// PRIVATE ACCESS · Tailscale VPN</div></div>
-        <span class="status-chip chip-complete">● Complete</span>
-      </div>
-      <div class="content">
-        <div class="card">
-          <div class="card-title">🔒 What It Does</div>
-          <div class="card-body">Tailscale creates a WireGuard-based mesh VPN. Every enrolled device gets a private IP and can reach the homelab directly — no port forwarding, no public exposure. All admin interfaces are exclusively accessible via Tailscale, never the public internet.</div>
-        </div>
-
-        <div class="section-divider">Enrolled Devices</div>
-        <div class="grid-2">
-          <div class="card">
-            <div class="card-title">🖥️ TrueNAS Server</div>
-            <div class="card-meta">Behind Tailscale</div>
-            <div class="card-body" style="font-size:12px;">Installed via Apps catalog with subnet routing for <code style="color:var(--amber)">internal IP</code>. Exposes the entire home LAN to all enrolled Tailscale devices.</div>
-          </div>
-          <div class="card">
-            <div class="card-title">💻 Fedora Laptop</div>
-            <div class="card-meta">Behind Tailscale</div>
-            <div class="card-body" style="font-size:12px;">Installed via package manager with Trayscale GUI for system tray access. Runs as a systemd service — auto-starts on boot.</div>
-          </div>
-        </div>
-
-        <div class="section-divider">Private Access URLs</div>
-        <div class="card dim">
-          <div class="card-body">
-            <ul style="list-style:none;display:flex;flex-direction:column;gap:8px;">
-              <li style="display:flex;gap:8px;font-size:12px;"><span style="color:var(--green)">›</span> <strong style="color:var(--text-bright)">Storage UI</strong> — Tailscale VPN</li>
-              <li style="display:flex;gap:8px;font-size:12px;"><span style="color:var(--green)">›</span> <strong style="color:var(--text-bright)">Container Manager</strong> — Tailscale VPN:&lt;port&gt;</li>
-              <li style="display:flex;gap:8px;font-size:12px;"><span style="color:var(--green)">›</span> <strong style="color:var(--text-bright)">Code-Server</strong> — Tailscale VPN:&lt;port&gt;</li>
-              <li style="display:flex;gap:8px;font-size:12px;"><span style="color:var(--green)">›</span> <strong style="color:var(--text-bright)">AdGuard Home</strong> — Tailscale VPN</li>
-              <li style="display:flex;gap:8px;font-size:12px;"><span style="color:var(--green)">›</span> <strong style="color:var(--text-bright)">Short form (any enrolled device)</strong> — Tailscale VPN</li>
-            </ul>
-          </div>
-        </div>
-
-        <div class="info-box" style="margin-top:12px;">
-          <div class="info-label">ℹ️ Access Guide</div>
-          On the home network, use the local IP directly for fastest access. Away from home on any enrolled device, use the MagicDNS hostname — Tailscale handles routing automatically.
-        </div>
-      </div>
-    </div>
-
-    <!-- AUTHENTIK -->
-    <div id="page-authentik" class="page">
-      <div class="page-header">
-        <div><div class="page-title">Authentik SSO</div><div class="page-subtitle">// IDENTITY PROVIDER · auth.gonzotech.us</div></div>
-        <span class="status-chip chip-wip">◐ In Progress</span>
-      </div>
-      <div class="content">
-        <div class="card amber">
-          <div class="card-title">🛡️ What It Does</div>
-          <div class="card-body">Authentik is the central identity layer for GonzoTech. All public services authenticate through Authentik — one login, one place to manage users, MFA enforcement, audit logs, and instant access revocation across all services simultaneously. Google is configured as a social login source so you sign in with your existing Google account.</div>
-        </div>
-
-        <div class="section-divider">Why Authentik</div>
-        <div class="grid-2">
-          <div class="card">
-            <div class="card-title">🔑 Single Login</div>
-            <div class="card-body" style="font-size:12px;">One set of credentials — or just your Google account — gets you into Jellyfin, Immich, Seerr, and any other connected service. No separate passwords to manage per app.</div>
-          </div>
-          <div class="card">
-            <div class="card-title">🛑 Instant Revocation</div>
-            <div class="card-body" style="font-size:12px;">Removing a user in Authentik immediately cuts off access to every connected service. No hunting through individual app settings.</div>
-          </div>
-          <div class="card">
-            <div class="card-title">📋 Audit Trail</div>
-            <div class="card-body" style="font-size:12px;">Every login attempt — successful or failed — is logged centrally. Full visibility into who accessed what and when.</div>
-          </div>
-          <div class="card">
-            <div class="card-title">🔐 MFA Everywhere</div>
-            <div class="card-body" style="font-size:12px;">Configure MFA once in Authentik and it applies to all connected services automatically. No per-app MFA setup required.</div>
-          </div>
-        </div>
-
-        <div class="section-divider">Service Integration Plan</div>
-        <div class="card dim">
-          <table class="spec-table">
-            <tr><td>Cloudflare Zero Trust</td><td>OIDC — gates all public subdomains via Access Policies</td></tr>
-            <tr><td>Immich</td><td>OAuth2 native — Administration → OAuth settings</td></tr>
-            <tr><td>Jellyfin</td><td>SSO-Auth plugin — OIDC provider configuration</td></tr>
-            <tr><td>Seerr</td><td>Via Cloudflare Access policy</td></tr>
-            <tr><td>Romm</td><td>Via Cloudflare Access policy (no native OAuth)</td></tr>
-            <tr><td>Outline (future)</td><td>OIDC native — provider URL to Authentik</td></tr>
-          </table>
-        </div>
-      </div>
-    </div>
-
-  </main>
 </div>
 
-<script>
-  function showPage(id, el) {
-    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-    document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-    document.getElementById('page-' + id).classList.add('active');
-    if (el) el.classList.add('active');
-  }
-</script>
+<!-- ====== SERVICES ====== -->
+<div id="services" class="content-section">
+    <div class="page-header">
+        <div>
+            <div class="page-header-title">Services & Infrastructure</div>
+            <div class="page-header-sub">Everything that powers GonzoTech — hardware, networking, and live domains.</div>
+        </div>
+        <span class="badge badge-green">● Live</span>
+    </div>
 
+    <div class="section" style="padding-top:36px">
+
+        <div class="section-header">
+            <div class="section-label">Live domains</div>
+            <h2 class="section-title">Public endpoints</h2>
+            <p class="section-desc">All services are routed through Cloudflare Zero Trust — encrypted, fast, and accessible from anywhere without exposing a single port.</p>
+        </div>
+        <div class="domain-list">
+            <div class="domain-row">
+                <div class="live-dot"></div>
+                <div class="domain-url">watch.gonzotech.us</div>
+                <div class="domain-desc">Jellyfin — Media Streaming</div>
+            </div>
+            <div class="domain-row">
+                <div class="live-dot"></div>
+                <div class="domain-url">photos.gonzotech.us</div>
+                <div class="domain-desc">Immich — Photo & Video Backup</div>
+            </div>
+            <div class="domain-row">
+                <div class="live-dot"></div>
+                <div class="domain-url">play.gonzotech.us</div>
+                <div class="domain-desc">Romm — Retro Game Library</div>
+            </div>
+            <div class="domain-row">
+                <div class="live-dot"></div>
+                <div class="domain-url">requests.gonzotech.us</div>
+                <div class="domain-desc">Seerr — Media Requests</div>
+            </div>
+            <div class="domain-row">
+                <div class="live-dot"></div>
+                <div class="domain-url">status.gonzotech.us</div>
+                <div class="domain-desc">Uptime Kuma — Service Monitor</div>
+            </div>
+            <div class="domain-row">
+                <div class="live-dot"></div>
+                <div class="domain-url">truenas.gonzotech.us</div>
+                <div class="domain-desc">TrueNAS — Storage Management</div>
+            </div>
+        </div>
+
+        <div class="section-header" style="margin-top:40px">
+            <div class="section-label">Under the hood</div>
+            <h2 class="section-title">Hardware & stack</h2>
+        </div>
+        <div class="grid-2">
+            <div class="info-card">
+                <div class="info-card-icon">🖥️</div>
+                <div>
+                    <div class="info-card-title">Server Hardware</div>
+                    <table class="spec-table" style="margin-top:10px">
+                        <tr><td>Machine</td><td>Dell Optiplex 3070 SFF</td></tr>
+                        <tr><td>CPU</td><td>Intel Core i5-9500T</td></tr>
+                        <tr><td>RAM</td><td>16GB DDR4</td></tr>
+                        <tr><td>Network</td><td>2.5G NIC</td></tr>
+                        <tr><td>OS</td><td>TrueNAS SCALE</td></tr>
+                    </table>
+                </div>
+            </div>
+            <div class="info-card">
+                <div class="info-card-icon">💾</div>
+                <div>
+                    <div class="info-card-title">Storage Layout</div>
+                    <table class="spec-table" style="margin-top:10px">
+                        <tr><td>Media pool</td><td>3TB HDD (movies, TV, torrents)</td></tr>
+                        <tr><td>Config pool</td><td>SSD (app data, databases)</td></tr>
+                        <tr><td>Containers</td><td>Docker via Dockge</td></tr>
+                        <tr><td>Networking</td><td>Cloudflare Zero Trust</td></tr>
+                        <tr><td>DNS</td><td>Cloudflare (gonzotech.us)</td></tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<!-- ====== PROJECTS ====== -->
+<div id="projects" class="content-section">
+    <div class="page-header">
+        <div>
+            <div class="page-header-title">Projects</div>
+            <div class="page-header-sub">What's been built, what's in progress, and what's coming next.</div>
+        </div>
+    </div>
+    <div class="section" style="padding-top:36px">
+        <div id="project-list"></div>
+    </div>
+</div>
+
+<!-- ====== AUTOMATION ====== -->
+<div id="automation" class="content-section">
+    <div class="page-header">
+        <div>
+            <div class="page-header-title">Automation</div>
+            <div class="page-header-sub">The systems that run quietly in the background so everything just works.</div>
+        </div>
+        <span class="badge badge-green">● Running</span>
+    </div>
+    <div class="section" style="padding-top:36px">
+        <div id="automation-list"></div>
+    </div>
+</div>
+
+<!-- ====== CONTACT ====== -->
+<div id="contact" class="content-section">
+    <div class="page-header">
+        <div>
+            <div class="page-header-title">Get in Touch</div>
+            <div class="page-header-sub">Questions, ideas, or just want to say hi — send a message.</div>
+        </div>
+    </div>
+    <div class="section" style="padding-top:36px; max-width:640px">
+        <form id="contact-form">
+            <div class="form-group">
+                <label class="form-label">Subject</label>
+                <input type="text" placeholder="What's on your mind?" required>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Message</label>
+                <textarea placeholder="Write your message here..." required></textarea>
+            </div>
+            <button type="submit" class="btn-submit">Send Message</button>
+        </form>
+    </div>
+</div>
+
+</div><!-- end page-wrap -->
+<script src="script.js"></script>
 </body>
 </html>

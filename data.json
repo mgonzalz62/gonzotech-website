@@ -1,59 +1,51 @@
 {
-  "system_logs": [
-    {"time": "BOOT", "message": "TrueNAS SCALE initialized. Pool <span class='val'>tank</span> + <span class='val'>storage</span> online."},
-    {"time": "SVC",  "message": "All 9 Docker services confirmed <span class='cmd'>RUNNING</span> via Dockge."},
-    {"time": "NET",  "message": "Cloudflare tunnel active. 6 domains resolving on gonzotech.us."},
-    {"time": "VPN",  "message": "Gluetun / NordVPN handshake OK. ARR stack traffic routed securely."},
-    {"time": "SYNC", "message": "Recyclarr sync complete — Radarr &amp; Sonarr quality profiles up to date."},
-    {"time": "LIVE", "message": "System monitoring active. All endpoints healthy. <span class='cmd'>NOMINAL</span>."}
-  ],
   "projects": [
     {
       "name": "Homelab Foundation",
       "status": "complete",
-      "description": "Stood up TrueNAS SCALE on a Dell Optiplex 3070 SFF with a dual-pool storage setup (3TB HDD media pool + SSD config pool). All services containerized in Dockge and exposed via Cloudflare Zero Trust tunnels — no open ports required."
+      "description": "Set up TrueNAS SCALE on a Dell Optiplex 3070 SFF with a dual-pool storage layout — a 3TB HDD pool for media and a separate SSD pool for app configs. All services run as Docker containers managed through Dockge, exposed to the internet securely via Cloudflare Zero Trust tunnels with no open ports required."
     },
     {
       "name": "Media Ecosystem",
       "status": "complete",
-      "description": "Full media stack deployed: Jellyfin for streaming (Intel QuickSync hardware transcoding, custom GonzoTech CSS branding), and an automated acquisition pipeline using Sonarr, Radarr, Prowlarr, and qBittorrent all routed through NordVPN via Gluetun."
+      "description": "Built a complete media stack: Jellyfin handles streaming with Intel QuickSync hardware transcoding, while Sonarr, Radarr, Prowlarr, and qBittorrent work together to automatically find and download content. All download traffic is routed through NordVPN via Gluetun for privacy."
     },
     {
       "name": "Photo & Game Libraries",
       "status": "complete",
-      "description": "Immich manages self-hosted photo/video backup with SMB external library integration. Romm catalogs 2,300+ ROMs across 19 platforms with full IGDB metadata. Both accessible remotely via dedicated subdomains."
+      "description": "Immich provides fully self-hosted photo and video backup with direct integration to the NAS storage. Romm manages a retro game library of over 2,300 titles across 19 platforms, complete with cover art and metadata pulled automatically from IGDB."
     },
     {
       "name": "Storage Expansion",
       "status": "wip",
-      "description": "Planning an 8TB HDD addition with data migration from the current 3TB pool. Goal is to extend the media library capacity while maintaining the hardlink-compatible folder structure for efficient storage."
+      "description": "Planning to add an 8TB drive and migrate the current media pool to expand capacity. The goal is to keep the existing folder structure intact so nothing breaks — Jellyfin, Sonarr, and Radarr all rely on consistent paths for hardlinking."
     },
     {
       "name": "Hardware Upgrade",
       "status": "planned",
-      "description": "The Optiplex 3070 SFF has served well, but a more expandable system is on the horizon — more PCIe slots, additional drive bays, and headroom for future workloads like local AI inference or additional VMs."
+      "description": "The Optiplex 3070 has been a great starting point, but upgrading to a system with more drive bays, PCIe slots, and ECC RAM support is the next step. This will open the door to larger storage pools and more demanding workloads down the road."
     }
   ],
   "automation": [
     {
-      "name": "Media Acquisition Pipeline",
+      "name": "Automated Media Downloads",
       "status": "active",
-      "description": "Sonarr and Radarr monitor RSS feeds and trigger qBittorrent downloads automatically. Prowlarr aggregates all indexers in one place. Completed downloads are moved and renamed without any manual intervention."
+      "description": "Sonarr and Radarr monitor for new releases and automatically trigger downloads through qBittorrent the moment something becomes available. Once downloaded, files are moved, renamed, and organized — no manual steps required."
     },
     {
-      "name": "Quality Profile Sync (Recyclarr)",
+      "name": "Quality Profile Sync",
       "status": "active",
-      "description": "Recyclarr syncs TRaSH Guide quality profiles into Radarr and Sonarr on a schedule — keeping release scoring, custom formats, and quality cutoffs consistently tuned without manual edits."
+      "description": "Recyclarr runs on a schedule to keep Radarr and Sonarr in sync with TRaSH Guide quality profiles. This ensures release scoring, preferred formats, and quality cutoffs stay tuned without needing to dig through settings manually."
     },
     {
       "name": "Cloudflare Tunnel Management",
       "status": "active",
-      "description": "Cloudflared runs as a Docker container and maintains persistent tunnels for all six public subdomains. No dynamic DNS, no port forwarding — services are exposed securely through Cloudflare's network."
+      "description": "A Cloudflared container maintains persistent tunnels for all six public subdomains. When a new service needs to be exposed, a new tunnel entry is added in the Cloudflare dashboard — no firewall changes, no router config, no downtime."
     },
     {
-      "name": "Service Monitoring (Uptime Kuma)",
+      "name": "Uptime Monitoring",
       "status": "active",
-      "description": "Uptime Kuma polls all internal and external service endpoints on a regular interval. A public status page at status.gonzotech.us gives a live view of what's up — grouped by service category."
+      "description": "Uptime Kuma checks every service at regular intervals and pushes alerts when something goes down. A public status page at status.gonzotech.us shows the live state of the whole stack — useful for sharing uptime with anyone who uses the services."
     }
   ]
 }
