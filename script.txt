@@ -1,6 +1,6 @@
 /**
  * GonzoTech — Core JS
- * Tab navigation · Data injection · Stats animation · Contact form
+ * Tab navigation · Data injection · Contact form
  */
 
 // --- Tab Navigation ---
@@ -71,51 +71,6 @@ async function loadData() {
     }
 }
 
-// --- Stats count-up animation ---
-function animateStats() {
-    const stats = document.querySelectorAll('.stat-val[data-target]');
-    if (!stats.length) return;
-
-    const duration = 1400;
-
-    stats.forEach((el, i) => {
-        const raw = el.dataset.target;
-        const match = raw.match(/^([\d.]+)([A-Za-z]*)$/);
-        if (!match) return;
-
-        const num    = parseFloat(match[1]);
-        const suffix = match[2] || '';
-        const isFloat = match[1].includes('.');
-
-        // Stagger each stat slightly
-        const delay = i * 80;
-
-        setTimeout(() => {
-            const start = performance.now();
-
-            function update(now) {
-                const elapsed  = now - start;
-                const progress = Math.min(elapsed / duration, 1);
-                // Ease out cubic
-                const eased    = 1 - Math.pow(1 - progress, 3);
-                const current  = num * eased;
-
-                el.textContent = isFloat
-                    ? current.toFixed(1) + suffix
-                    : Math.round(current) + suffix;
-
-                if (progress < 1) {
-                    requestAnimationFrame(update);
-                } else {
-                    el.textContent = raw; // Snap to exact final value
-                }
-            }
-
-            requestAnimationFrame(update);
-        }, delay);
-    });
-}
-
 // --- Contact form ---
 function initContactForm() {
     const form = document.getElementById('contact-form');
@@ -125,13 +80,11 @@ function initContactForm() {
         e.preventDefault();
         const btn = form.querySelector('.btn-submit');
         if (!btn) return;
-        btn.textContent = '✓ Message sent!';
+        btn.textContent = 'Message sent!';
         btn.style.background = 'var(--green)';
-        btn.style.boxShadow = '0 4px 16px rgba(34,197,94,0.3)';
         setTimeout(() => {
             btn.textContent = 'Send Message';
             btn.style.background = '';
-            btn.style.boxShadow = '';
             form.reset();
         }, 3000);
     });
@@ -140,6 +93,5 @@ function initContactForm() {
 // --- Init ---
 document.addEventListener('DOMContentLoaded', () => {
     loadData();
-    animateStats();
     initContactForm();
 });

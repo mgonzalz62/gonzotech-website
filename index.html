@@ -7,6 +7,10 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
+
+<!-- Thin animated gradient bar at top of page -->
+<div class="page-top-bar"></div>
+
 <div class="page-wrap">
 
 <!-- ====== HEADER ====== -->
@@ -16,15 +20,15 @@
             <div class="logo-icon">G</div>
             <span class="logo-name">GonzoTech</span>
         </div>
-        <nav>
-            <button class="tab-btn active" onclick="showTab('home', this)">Home</button>
-            <button class="tab-btn" onclick="showTab('services', this)">Services</button>
-            <button class="tab-btn" onclick="showTab('projects', this)">Projects</button>
-            <button class="tab-btn" onclick="showTab('automation', this)">Automation</button>
-            <button class="tab-btn" onclick="showTab('contact', this)">Contact</button>
-        </nav>
-        <div class="header-cta">
-            <a href="/docs/" target="_blank">Technical Docs →</a>
+        <!-- nav-wrap enables the fade overlay hint on mobile -->
+        <div class="nav-wrap">
+            <nav>
+                <button class="tab-btn active" onclick="showTab('home', this)">Home</button>
+                <button class="tab-btn" onclick="showTab('services', this)">Services</button>
+                <button class="tab-btn" onclick="showTab('projects', this)">Projects</button>
+                <button class="tab-btn" onclick="showTab('automation', this)">Automation</button>
+                <button class="tab-btn" onclick="showTab('contact', this)">Contact</button>
+            </nav>
         </div>
     </div>
 </header>
@@ -34,6 +38,7 @@
 
     <!-- Hero -->
     <div class="hero">
+        <div class="hero-glow"></div>
         <div class="hero-eyebrow">All systems operational</div>
         <h1 class="hero-title">A self-hosted lab<br>built from <span>scratch</span>.</h1>
         <p class="hero-sub">GonzoTech is a personal home lab running on TrueNAS — hosting everything from media streaming and photo backups to retro gaming and remote development. All privately owned, self-managed, and accessible from anywhere.</p>
@@ -47,19 +52,19 @@
     <div class="stats-section">
         <div class="stats-grid">
             <div class="stat-item">
-                <div class="stat-val">9</div>
+                <div class="stat-val" data-target="9">9</div>
                 <div class="stat-label">Active Services</div>
             </div>
             <div class="stat-item">
-                <div class="stat-val">6</div>
+                <div class="stat-val" data-target="6">6</div>
                 <div class="stat-label">Custom Domains</div>
             </div>
             <div class="stat-item">
-                <div class="stat-val">2.3K</div>
+                <div class="stat-val" data-target="2.3K">2.3K</div>
                 <div class="stat-label">ROMs Catalogued</div>
             </div>
             <div class="stat-item">
-                <div class="stat-val">3TB</div>
+                <div class="stat-val" data-target="3TB">3TB</div>
                 <div class="stat-label">Media Storage</div>
             </div>
         </div>
@@ -132,36 +137,42 @@
             <p class="section-desc">All services are routed through Cloudflare Zero Trust — encrypted, fast, and accessible from anywhere without exposing a single port.</p>
         </div>
         <div class="domain-list">
-            <div class="domain-row">
+            <a href="https://watch.gonzotech.us" target="_blank" class="domain-row">
                 <div class="live-dot"></div>
                 <div class="domain-url">watch.gonzotech.us</div>
                 <div class="domain-desc">Jellyfin — Media Streaming</div>
-            </div>
-            <div class="domain-row">
+                <div class="domain-arrow">→</div>
+            </a>
+            <a href="https://photos.gonzotech.us" target="_blank" class="domain-row">
                 <div class="live-dot"></div>
                 <div class="domain-url">photos.gonzotech.us</div>
                 <div class="domain-desc">Immich — Photo & Video Backup</div>
-            </div>
-            <div class="domain-row">
+                <div class="domain-arrow">→</div>
+            </a>
+            <a href="https://play.gonzotech.us" target="_blank" class="domain-row">
                 <div class="live-dot"></div>
                 <div class="domain-url">play.gonzotech.us</div>
                 <div class="domain-desc">Romm — Retro Game Library</div>
-            </div>
-            <div class="domain-row">
+                <div class="domain-arrow">→</div>
+            </a>
+            <a href="https://requests.gonzotech.us" target="_blank" class="domain-row">
                 <div class="live-dot"></div>
                 <div class="domain-url">requests.gonzotech.us</div>
                 <div class="domain-desc">Seerr — Media Requests</div>
-            </div>
-            <div class="domain-row">
+                <div class="domain-arrow">→</div>
+            </a>
+            <a href="https://status.gonzotech.us" target="_blank" class="domain-row">
                 <div class="live-dot"></div>
                 <div class="domain-url">status.gonzotech.us</div>
                 <div class="domain-desc">Uptime Kuma — Service Monitor</div>
-            </div>
-            <div class="domain-row">
+                <div class="domain-arrow">→</div>
+            </a>
+            <a href="https://truenas.gonzotech.us" target="_blank" class="domain-row">
                 <div class="live-dot"></div>
                 <div class="domain-url">truenas.gonzotech.us</div>
                 <div class="domain-desc">TrueNAS — Storage Management</div>
-            </div>
+                <div class="domain-arrow">→</div>
+            </a>
         </div>
 
         <div class="section-header" style="margin-top:40px">
@@ -236,14 +247,21 @@
         </div>
     </div>
     <div class="section" style="padding-top:36px; max-width:640px">
+        <!-- Wire this up to Formspree or Web3Forms for real submissions -->
         <form id="contact-form">
-            <div class="form-group">
-                <label class="form-label">Subject</label>
-                <input type="text" placeholder="What's on your mind?" required>
+            <div class="form-row">
+                <div class="form-group">
+                    <label class="form-label">Name</label>
+                    <input type="text" name="name" placeholder="Your name" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Email</label>
+                    <input type="email" name="email" placeholder="you@example.com" required>
+                </div>
             </div>
             <div class="form-group">
                 <label class="form-label">Message</label>
-                <textarea placeholder="Write your message here..." required></textarea>
+                <textarea name="message" placeholder="Write your message here..." required></textarea>
             </div>
             <button type="submit" class="btn-submit">Send Message</button>
         </form>
@@ -251,6 +269,17 @@
 </div>
 
 </div><!-- end page-wrap -->
+
+<!-- ====== FOOTER ====== -->
+<footer>
+    <div class="footer-inner">
+        <span class="footer-brand">GonzoTech</span>
+        <span class="footer-sep">·</span>
+        <span>Self-hosted on TrueNAS SCALE</span>
+        <span class="footer-right">Built with curiosity &amp; caffeine ☕</span>
+    </div>
+</footer>
+
 <script src="script.js"></script>
 </body>
 </html>
