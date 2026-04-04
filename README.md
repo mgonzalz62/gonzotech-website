@@ -1,52 +1,75 @@
-# 🌐 GonzoTech.us | Command Center
+# GonzoTech.us
 
-Welcome to the official repository for **GonzoTech.us**. This is a lightweight, high-performance tech portal hosted on **Cloudflare Pages**, designed with a "Command Center" aesthetic featuring a Teal, Black, and Midnight Blue color scheme.
+Personal home lab website for [gonzotech.us](https://gonzotech.us) — a self-hosted media, gaming, and development ecosystem built on TrueNAS and Cloudflare.
 
----
+## What this site is
 
-## 🛠️ Tech Stack
-- **Frontend:** HTML5, CSS3 (Custom Variables)
-- **Logic:** Vanilla JavaScript (ES6+)
-- **Data:** JSON-driven content management
-- **Hosting:** Cloudflare Pages
-- **Deployment:** GitHub Actions / Automatic Sync
+The main site (`/`) is a clean, public-facing overview of the GonzoTech home lab. It covers what's running, what's been built, and what's in progress — written for a general audience.
 
----
+The docs section (`/docs/`) is a detailed technical reference covering setup steps, configuration, architecture decisions, and a running roadmap. Built for personal reference and anyone curious about the specifics.
 
-## 📂 File Structure & Purpose
+## Stack
 
-| File | Description |
-| :--- | :--- |
-| `index.html` | The core structure. It contains the containers that JavaScript fills with data. |
-| `style.css` | The global stylesheet. Defines the Midnight Blue theme and Teal accents. |
-| `script.js` | The "brain" of the site. Handles tab switching, the live clock, system vitals, and fetching JSON data. |
-| `data.json` | **The Content Hub.** This is the only file you need to edit to update projects or logs. |
+- **Frontend:** HTML5, CSS3 (Inter + JetBrains Mono via Google Fonts), Vanilla JS
+- **Content:** `data.json` — projects and automation entries are loaded dynamically
+- **Hosting:** Cloudflare Pages (auto-deploys on push to `main`)
+- **DNS & Tunnels:** Cloudflare — all subdomains route through Zero Trust tunnels
 
----
+## Project structure
 
-## 🚀 How to Update Content
+```
+gonzotech-website/
+├── index.html       # Main site
+├── style.css        # All styles
+├── script.js        # Tab navigation, data injection, contact form
+├── data.json        # Projects and automation content
+└── docs/
+    └── index.html   # Full technical documentation (self-contained)
+```
 
-You do **not** need to touch the HTML to update the site content. Follow these steps:
+## Updating content
 
-1. Open `data.json`.
-2. **To Add a Project:** Add a new object to the `"projects"` array.
-3. **To Update Logs:** Add a new entry to the `"system_logs"` array.
-4. **Commit Changes:** Once you save and commit to GitHub, Cloudflare Pages will automatically rebuild the site in ~60 seconds.
+Projects and automation entries live in `data.json`. Edit that file to add, update, or remove cards — no HTML changes needed.
 
+```json
+{
+  "projects": [
+    {
+      "name": "Project name",
+      "status": "complete | wip | planned | active",
+      "description": "What this is and what was done."
+    }
+  ],
+  "automation": [...]
+}
+```
 
+Status values map to badge colors: `complete` / `active` → green, `wip` → amber, `planned` → blue.
 
----
+## Deploying
 
-## 🖥️ Local Development
+Push to `main` and Cloudflare Pages builds automatically — usually live within 60 seconds. No build step required.
 
-To view the site locally on your computer:
-1. Clone the repository.
-2. Open `index.html` in your browser.
-   * *Note:* Because the site uses the `fetch()` API for the JSON file, some browsers (like Chrome) may block the data from loading for security. For the best local experience, use a "Live Server" extension in VS Code or upload to GitHub.
+```bash
+git add .
+git commit -m "your message"
+git push
+```
 
----
+## Running locally
 
-## 📡 System Status
-- **UI:** Responsive (Mobile Optimized)
-- **Uplink:** Secure
-- **Data Source:** Local JSON
+Open `index.html` directly in a browser. If `data.json` doesn't load (some browsers block local fetch requests), use a simple local server:
+
+```bash
+# Python
+python3 -m http.server 8080
+
+# Node (npx)
+npx serve .
+```
+
+Then open `http://localhost:8080`.
+
+## Home lab
+
+The site documents a TrueNAS SCALE home lab running on a Dell Optiplex 3070 SFF. Active services include Jellyfin, Immich, Romm, Sonarr, Radarr, Prowlarr, qBittorrent (via Gluetun/NordVPN), Uptime Kuma, and Code-Server — all containerized in Docker via Dockge and exposed through Cloudflare tunnels.
