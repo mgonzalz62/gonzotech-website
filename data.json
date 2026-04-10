@@ -61,6 +61,12 @@
       "name": "Nextcloud Background Jobs",
       "status": "active",
       "description": "A scheduled cron job runs Nextcloud's background tasks every 5 minutes — keeping file indexing, calendar sync, and contact sync up to date across all connected devices without any manual intervention."
+    },
+    {
+      "name": "Vaultwarden",
+      "status": "planned",
+      "description": "Deploying a self-hosted Bitwarden instance to manage all family passwords securely on our own hardware.",
+      "benefit": "Eliminates reliance on browser-based password managers and keeps our credentials encrypted in our own vault."
     }
   ]
 }
