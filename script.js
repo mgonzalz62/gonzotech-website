@@ -1,9 +1,8 @@
 /**
  * GonzoTech — Core JS
- * Tab navigation · Data injection · Stats animation · Contact form
+ * Updated: 2026-04-10
  */
 
-// --- Tab Navigation ---
 function showTab(id, btn) {
     document.querySelectorAll('.content-section').forEach(s => s.classList.remove('active'));
     document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
@@ -17,129 +16,71 @@ function showTab(id, btn) {
     window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
-// --- Badge helper ---
 function badge(status) {
     const map = {
         complete: ['badge-green',  '✓ Complete'],
         active:   ['badge-green',  '● Active'],
         wip:      ['badge-amber',  '◐ In Progress'],
-        planned:  ['badge-blue',   '○ Planned'],
-        offline:  ['badge-purple', '✕ Offline'],
+        planned:  ['badge-blue',   '○ Planned']
     };
     const key = (status || '').toLowerCase().replace(/[\s-]/g, '');
     const [cls, label] = map[key] || ['badge-blue', status];
     return `<span class="badge ${cls}">${label}</span>`;
 }
 
-// --- Load data.json ---
+// TEACHING POINT: Using 'async/await' for cleaner network requests
 async function loadData() {
+    const projBox = document.getElementById('project-list');
+    const autoBox = document.getElementById('automation-list');
+
+    // Show a loading state immediately
+    if (projBox) projBox.innerHTML = '<div style="color:var(--text-dim)">Fetching the latest lab updates...</div>';
+
     try {
         const res = await fetch('./data.json');
-        if (!res.ok) throw new Error('Could not load data.json');
+        if (!res.ok) throw new Error('Data file not found');
         const data = await res.json();
 
-        // Projects
-        const projBox = document.getElementById('project-list');
+        // Render Projects
         if (projBox && data.projects) {
             projBox.innerHTML = data.projects.map(p => `
-                <div class="proj-card">
-                    <div class="proj-card-top">
-                        <div class="proj-title">${p.name}</div>
-                        ${badge(p.status)}
-                    </div>
-                    <div class="proj-body">${p.description}</div>
-                </div>
+            <div class="proj-card">
+            <div class="proj-card-top">
+            <div class="proj-title">${p.name}</div>
+            ${badge(p.status)}
+            </div>
+            <div class="proj-benefit" style="color:var(--accent); font-size:0.85rem; margin-bottom:8px; font-weight:600;">
+            ${p.benefit || ''}
+            </div>
+            <div class="proj-body">${p.description}</div>
+            </div>
             `).join('');
         }
 
-        // Automation
-        const autoBox = document.getElementById('automation-list');
+        // Render Automation
         if (autoBox && data.automation) {
             autoBox.innerHTML = data.automation.map(a => `
-                <div class="proj-card">
-                    <div class="proj-card-top">
-                        <div class="proj-title">${a.name}</div>
-                        ${badge(a.status)}
-                    </div>
-                    <div class="proj-body">${a.description}</div>
-                </div>
+            <div class="proj-card">
+            <div class="proj-card-top">
+            <div class="proj-title">${a.name}</div>
+            ${badge(a.status)}
+            </div>
+            <div class="proj-benefit" style="color:var(--accent); font-size:0.85rem; margin-bottom:8px; font-weight:600;">
+            ${a.benefit || ''}
+            </div>
+            <div class="proj-body">${a.description}</div>
+            </div>
             `).join('');
         }
 
     } catch (err) {
-        console.error('GonzoTech: failed to load data —', err);
+        // Professional Error State: Don't leave the user with a blank screen
+        if (projBox) projBox.innerHTML = '<div style="color:var(--amber)">Lab stats are currently offline. Check back soon!</div>';
+        console.error('Fetch Error:', err);
     }
 }
 
-// --- Stats count-up animation ---
-function animateStats() {
-    const stats = document.querySelectorAll('.stat-val[data-target]');
-    if (!stats.length) return;
-
-    const duration = 1400;
-
-    stats.forEach((el, i) => {
-        const raw = el.dataset.target;
-        const match = raw.match(/^([\d.]+)([A-Za-z]*)$/);
-        if (!match) return;
-
-        const num    = parseFloat(match[1]);
-        const suffix = match[2] || '';
-        const isFloat = match[1].includes('.');
-
-        // Stagger each stat slightly
-        const delay = i * 80;
-
-        setTimeout(() => {
-            const start = performance.now();
-
-            function update(now) {
-                const elapsed  = now - start;
-                const progress = Math.min(elapsed / duration, 1);
-                // Ease out cubic
-                const eased    = 1 - Math.pow(1 - progress, 3);
-                const current  = num * eased;
-
-                el.textContent = isFloat
-                    ? current.toFixed(1) + suffix
-                    : Math.round(current) + suffix;
-
-                if (progress < 1) {
-                    requestAnimationFrame(update);
-                } else {
-                    el.textContent = raw; // Snap to exact final value
-                }
-            }
-
-            requestAnimationFrame(update);
-        }, delay);
-    });
-}
-
-// --- Contact form ---
-function initContactForm() {
-    const form = document.getElementById('contact-form');
-    if (!form) return;
-
-    form.addEventListener('submit', e => {
-        e.preventDefault();
-        const btn = form.querySelector('.btn-submit');
-        if (!btn) return;
-        btn.textContent = '✓ Message sent!';
-        btn.style.background = 'var(--green)';
-        btn.style.boxShadow = '0 4px 16px rgba(34,197,94,0.3)';
-        setTimeout(() => {
-            btn.textContent = 'Send Message';
-            btn.style.background = '';
-            btn.style.boxShadow = '';
-            form.reset();
-        }, 3000);
-    });
-}
-
-// --- Init ---
 document.addEventListener('DOMContentLoaded', () => {
     loadData();
-    animateStats();
-    initContactForm();
+    // animateStats(); // Re-enable if you have the stats logic active
 });
