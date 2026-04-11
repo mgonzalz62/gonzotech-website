@@ -52,7 +52,7 @@
     <div class="stats-section">
         <div class="stats-grid">
             <div class="stat-item">
-                <div class="stat-val" data-target="12">12</div>
+                <div class="stat-val" data-target="14">14</div>
                 <div class="stat-label">Active Services</div>
             </div>
             <div class="stat-item">
@@ -75,43 +75,61 @@
         <div class="section-header">
             <div class="section-label">What's running</div>
             <h2 class="section-title">Core services</h2>
-            <p class="section-desc">Everything runs in Docker containers managed through Dockge, exposed securely via Cloudflare tunnels — no open ports, no dynamic DNS headaches.</p>
+            <p class="section-desc">Everything runs in Docker containers managed through Dockge, exposed securely via Cloudflare tunnels and Tailscale — no open ports, no dynamic DNS headaches.</p>
         </div>
         <div class="services-grid">
             <div class="service-card">
                 <span class="service-icon">🎬</span>
                 <div class="service-name">Jellyfin</div>
-                <div class="service-desc">Personal media server with hardware-accelerated streaming. Movies, TV shows, and custom branding — all yours.</div>
+                <div class="service-desc">Personal media server with hardware-accelerated streaming, a full plugin suite, and Trickplay previews. Movies and TV, all yours.</div>
                 <a href="https://watch.gonzotech.us" target="_blank" class="service-link">watch.gonzotech.us →</a>
             </div>
             <div class="service-card">
                 <span class="service-icon">📸</span>
                 <div class="service-name">Immich</div>
-                <div class="service-desc">Self-hosted photo and video backup. Full control over your memories — no subscription, no third-party storage.</div>
+                <div class="service-desc">Self-hosted photo and video backup with mobile sync. Full control over your memories — no subscription, no third-party storage.</div>
                 <a href="https://photos.gonzotech.us" target="_blank" class="service-link">photos.gonzotech.us →</a>
             </div>
             <div class="service-card">
                 <span class="service-icon">🎮</span>
                 <div class="service-name">Romm</div>
-                <div class="service-desc">A growing library of 2,300+ retro games across 19 platforms, beautifully organized with full metadata.</div>
+                <div class="service-desc">A growing library of 2,300+ retro games across 19 platforms, beautifully organized with full metadata from IGDB.</div>
                 <a href="https://play.gonzotech.us" target="_blank" class="service-link">play.gonzotech.us →</a>
+            </div>
+            <div class="service-card">
+                <span class="service-icon">☁️</span>
+                <div class="service-name">Nextcloud</div>
+                <div class="service-desc">Self-hosted file sync, cloud storage, and CalDAV/CardDAV. A full Google Drive replacement — privately owned and on-premises.</div>
+                <a href="https://cloud.gonzotech.us" target="_blank" class="service-link">cloud.gonzotech.us →</a>
+            </div>
+            <div class="service-card">
+                <span class="service-icon">📝</span>
+                <div class="service-name">Collabora Online</div>
+                <div class="service-desc">Browser-based document editing integrated with Nextcloud. Write, edit, and collaborate on docs without leaving the browser.</div>
+                <a href="https://office.gonzotech.us" target="_blank" class="service-link">office.gonzotech.us →</a>
+            </div>
+            <div class="service-card">
+                <span class="service-icon">🔐</span>
+                <div class="service-name">Authentik SSO</div>
+                <div class="service-desc">Single sign-on across all services. One login works for Jellyfin, Immich, Nextcloud, and more — with Google social login support.</div>
+                <a href="https://auth.gonzotech.us" target="_blank" class="service-link">auth.gonzotech.us →</a>
             </div>
             <div class="service-card">
                 <span class="service-icon">📡</span>
                 <div class="service-name">Media Requests</div>
-                <div class="service-desc">Request new movies or TV shows and they're automatically downloaded and added to the library.</div>
-                <a href="https://requests.gonzotech.us" target="_blank" class="service-link">requests.gonzotech.us →</a>
+                <div class="service-desc">Request new movies or TV shows and they're automatically downloaded and added to the library via the full ARR stack.</div>
+                <a href="https://request.gonzotech.us" target="_blank" class="service-link">request.gonzotech.us →</a>
             </div>
             <div class="service-card">
                 <span class="service-icon">📊</span>
                 <div class="service-name">Status Page</div>
-                <div class="service-desc">Live uptime monitoring for all services. See what's online at a glance with automatic health checks.</div>
+                <div class="service-desc">Live uptime monitoring for all services. See what's online at a glance with automatic health checks every few minutes.</div>
                 <a href="https://status.gonzotech.us" target="_blank" class="service-link">status.gonzotech.us →</a>
             </div>
             <div class="service-card">
                 <span class="service-icon">💻</span>
                 <div class="service-name">Code-Server</div>
-                <div class="service-desc">Full VS Code environment in the browser. Manage configs and work on projects from any device.</div>
+                <div class="service-desc">Full VS Code environment in the browser. Manage configs and work on projects from any device, via Tailscale.</div>
                 <a href="#" class="service-link">Internal access →</a>
             </div>
         </div>
@@ -134,7 +152,7 @@
         <div class="section-header">
             <div class="section-label">Live domains</div>
             <h2 class="section-title">Public endpoints</h2>
-            <p class="section-desc">All services are routed through Cloudflare Zero Trust — encrypted, fast, and accessible from anywhere without exposing a single port.</p>
+            <p class="section-desc">Public services route through Cloudflare Zero Trust — encrypted, fast, and accessible from anywhere without exposing a single port. Internal tools (TrueNAS, ARR stack, Code-Server) are accessed privately via Tailscale.</p>
         </div>
         <div class="domain-list">
             <a href="https://watch.gonzotech.us" target="_blank" class="domain-row">
@@ -155,9 +173,27 @@
                 <div class="domain-desc">Romm — Retro Game Library</div>
                 <div class="domain-arrow">→</div>
             </a>
-            <a href="https://requests.gonzotech.us" target="_blank" class="domain-row">
+            <a href="https://cloud.gonzotech.us" target="_blank" class="domain-row">
                 <div class="live-dot"></div>
-                <div class="domain-url">requests.gonzotech.us</div>
+                <div class="domain-url">cloud.gonzotech.us</div>
+                <div class="domain-desc">Nextcloud — File Sync & Storage</div>
+                <div class="domain-arrow">→</div>
+            </a>
+            <a href="https://office.gonzotech.us" target="_blank" class="domain-row">
+                <div class="live-dot"></div>
+                <div class="domain-url">office.gonzotech.us</div>
+                <div class="domain-desc">Collabora — Online Document Editing</div>
+                <div class="domain-arrow">→</div>
+            </a>
+            <a href="https://auth.gonzotech.us" target="_blank" class="domain-row">
+                <div class="live-dot"></div>
+                <div class="domain-url">auth.gonzotech.us</div>
+                <div class="domain-desc">Authentik — Single Sign-On</div>
+                <div class="domain-arrow">→</div>
+            </a>
+            <a href="https://request.gonzotech.us" target="_blank" class="domain-row">
+                <div class="live-dot"></div>
+                <div class="domain-url">request.gonzotech.us</div>
                 <div class="domain-desc">Seerr — Media Requests</div>
                 <div class="domain-arrow">→</div>
             </a>
@@ -167,7 +203,6 @@
                 <div class="domain-desc">Uptime Kuma — Service Monitor</div>
                 <div class="domain-arrow">→</div>
             </a>
-
         </div>
 
         <div class="section-header" style="margin-top:40px">
@@ -191,13 +226,13 @@
             <div class="info-card">
                 <div class="info-card-icon">💾</div>
                 <div>
-                    <div class="info-card-title">Storage Layout</div>
+                    <div class="info-card-title">Storage & Network</div>
                     <table class="spec-table" style="margin-top:10px">
-                        <tr><td>Media pool</td><td>3TB HDD (movies, TV, torrents)</td></tr>
-                        <tr><td>Config pool</td><td>SSD (app data, databases)</td></tr>
+                        <tr><td>Media pool</td><td>3TB HDD — movies, TV, torrents</td></tr>
+                        <tr><td>Config pool</td><td>SSD — app data, databases</td></tr>
                         <tr><td>Containers</td><td>Docker via Dockge</td></tr>
-                        <tr><td>Networking</td><td>Cloudflare Zero Trust</td></tr>
-                        <tr><td>DNS</td><td>Cloudflare (gonzotech.us)</td></tr>
+                        <tr><td>Public access</td><td>Cloudflare Zero Trust tunnels</td></tr>
+                        <tr><td>Private access</td><td>Tailscale VPN (axolotl-grouse.ts.net)</td></tr>
                     </table>
                 </div>
             </div>

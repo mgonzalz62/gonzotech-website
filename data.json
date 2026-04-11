@@ -3,70 +3,94 @@
     {
       "name": "Homelab Foundation",
       "status": "complete",
-      "description": "Set up TrueNAS SCALE on a Dell Optiplex 3070 SFF with a dual-pool storage layout — a 3TB HDD pool for media and a separate SSD pool for app configs. All services run as Docker containers managed through Dockge, exposed to the internet securely via Cloudflare Zero Trust tunnels with no open ports required."
+      "description": "Set up TrueNAS SCALE on a Dell Optiplex 3070 SFF with a dual-pool storage layout — a 3TB HDD pool (tank) for media and a separate SSD pool (storage) for app configs. All services run as Docker containers managed through Dockge, exposed to the internet securely via Cloudflare Zero Trust tunnels with no open ports required."
     },
     {
       "name": "Media Ecosystem",
       "status": "complete",
-      "description": "Built a complete media stack: Jellyfin handles streaming with Intel QuickSync hardware transcoding, while Sonarr, Radarr, Prowlarr, and qBittorrent work together to automatically find and download content. All download traffic is routed through NordVPN via Gluetun for privacy. Usenet support was added as a faster, higher-quality download source alongside torrents."
+      "description": "Full media acquisition stack: Jellyfin handles streaming with Intel QuickSync hardware transcoding, a full plugin suite (Intro Skipper, Merge Versions, Trickplay previews, Ultrachromic theme), and Usenet via SABnzbd as the primary download client. Sonarr, Radarr, and Prowlarr automate discovery and organization with Recyclarr keeping TRaSH Guide quality profiles in sync. All download traffic routes through NordVPN via Gluetun."
     },
     {
       "name": "Photo & Game Libraries",
       "status": "complete",
-      "description": "Immich provides fully self-hosted photo and video backup — a private replacement for iCloud Photos and Google Photos, with no subscription and no third-party storage. Romm manages a retro game library of over 2,300 titles across 19 platforms, complete with cover art and metadata pulled automatically from IGDB."
+      "description": "Immich provides fully self-hosted photo and video backup with SMB external library support and Authentik SSO sign-in. Romm manages a retro game library of 2,319 titles across 19 platforms with cover art and metadata pulled from IGDB, running on a MariaDB backend."
     },
     {
-      "name": "Private Cloud & Secure Access",
+      "name": "Security & Access Layer",
       "status": "complete",
-      "description": "Nextcloud now provides private file sync, calendar, contacts, and in-browser document editing via Collabora — replacing Google Drive and iCloud Drive entirely. Authentik SSO was added as a central login layer across all services, with Google sign-in and MFA support. Tailscale creates a private VPN so admin tools are never exposed to the internet."
+      "description": "Tailscale VPN deployed on all devices with subnet routing and MagicDNS — TrueNAS and internal tools now access exclusively through the tailnet, off the public internet. Authentik SSO deployed at auth.gonzotech.us providing single sign-on across Jellyfin, Immich, Nextcloud, and Cloudflare Zero Trust with Google social login support."
     },
     {
-      "name": "Storage Expansion",
+      "name": "Cloud Storage Suite",
+      "status": "complete",
+      "description": "Nextcloud deployed at cloud.gonzotech.us for self-hosted file sync, CalDAV/CardDAV, and cloud storage — a full Google Drive/iCloud replacement. Collabora Online (CODE) running at office.gonzotech.us provides browser-based document editing integrated directly into Nextcloud. Both backed by Postgres + Redis and protected by Authentik SSO."
+    },
+    {
+      "name": "Infrastructure Hardening",
+      "status": "complete",
+      "description": "Cloudflared isolated into its own Docker stack so ARR stack crashes no longer kill public subdomains. A shared external proxy Docker network connects all stacks cleanly. Recyclarr syncs TRaSH Guide profiles on a schedule to keep Radarr and Sonarr quality settings tuned without manual intervention."
+    },
+    {
+      "name": "AdGuard Home",
       "status": "wip",
-      "description": "Planning to add an 8TB drive to expand media capacity. The current 3TB pool is managed carefully with a hardlink-compatible folder structure so Jellyfin, Sonarr, and Radarr stay consistent during the migration. Scrutiny will be deployed first to validate drive health before any data movement."
+      "description": "AdGuard Home deployed as a Docker container for network-wide DNS ad-blocking. Container is up and accessible via Tailscale — router DNS config still needs to be pointed at the server to go fully live."
     },
     {
-      "name": "Hardware Upgrade",
+      "name": "Media Pipeline Tuning",
+      "status": "wip",
+      "description": "Several housekeeping items in flight: Radarr custom format min score and file size limits need adjustment (YTS releases currently flagged as low quality), Romm config file volume path needs a fix to clear the startup warning, and a Radarr Manual Import pass on /data/torrents/movies is needed to register existing files. Jellyfin Intro Skipper plugin repo URL also changed and needs updating."
+    },
+    {
+      "name": "3-2-1 Automated Backup",
       "status": "planned",
-      "description": "The Optiplex 3070 SFF has been a solid starting point, but upgrading to a NAS-focused case (Jonsbo N5) with a new motherboard, Intel Arc GPU, HBA card, and expanded drive bays is the next major step. This will allow larger RAIDZ storage pools, better hardware transcoding, and more room to grow."
+      "description": "Priority #1 project. TrueNAS CloudSync to Backblaze B2 for all app configs and critical data. ZFS snapshots on the tank pool for point-in-time recovery. Without off-site backup the lab is temporary — this converts it into a real system."
+    },
+    {
+      "name": "Vaultwarden",
+      "status": "planned",
+      "description": "Self-hosted Bitwarden-compatible password manager. Clear community standard for self-hosting. Deploying this enables proper secret management — .env files and credentials can be moved out of plaintext and into a vault."
+    },
+    {
+      "name": "Observability Stack (Grafana + Loki)",
+      "status": "planned",
+      "description": "Promtail → Loki → Grafana for log aggregation and dashboards across all containers. Industry-standard monitoring stack that'll make diagnosing issues much faster. Grafana also enables custom dashboards for storage, network, and service health."
+    },
+    {
+      "name": "Home Assistant",
+      "status": "planned",
+      "description": "Gold-standard home automation platform. Deploying this before deciding on N8N vs Node-RED for automation workflows. Pairs naturally with Frigate NVR for camera AI object detection down the road."
+    },
+    {
+      "name": "Hardware Upgrade (Jonsbo N5)",
+      "status": "planned",
+      "description": "The Optiplex 3070 has been a great starting point. Upgrading to a purpose-built NAS chassis (Jonsbo N5 or similar) when the current hardware becomes an actual bottleneck — more drive bays, PCIe slots, and ECC RAM support will open the door to larger ZFS pools and more demanding workloads."
     }
   ],
   "automation": [
     {
       "name": "Automated Media Downloads",
       "status": "active",
-      "description": "Sonarr and Radarr monitor for new releases and automatically trigger downloads the moment something becomes available — through Usenet first, with torrents as a fallback. Files are moved, renamed, and organized into the library automatically with no manual steps required."
+      "description": "Sonarr and Radarr monitor for new releases and trigger downloads automatically — SABnzbd handles Usenet as the primary client (Newshosting, 30 connections, SSL) with qBittorrent as the torrent fallback. Once downloaded, files are moved, renamed, hardlinked into the media library, and picked up by Jellyfin — no manual steps required."
     },
     {
-      "name": "Quality Profile Sync",
+      "name": "Quality Profile Sync (Recyclarr)",
       "status": "active",
-      "description": "Recyclarr runs on a schedule to keep Radarr and Sonarr in sync with TRaSH Guide quality profiles. This ensures release scoring, preferred formats, and quality cutoffs stay tuned without needing to dig through settings manually."
-    },
-    {
-      "name": "Single Sign-On (Authentik)",
-      "status": "active",
-      "description": "Authentik runs as the identity layer for all public services. One login with Google unlocks Jellyfin, Immich, Nextcloud, and more — with MFA enforcement, audit logs, and the ability to revoke access to everything from one place instantly."
+      "description": "Recyclarr runs on a schedule to keep Radarr and Sonarr aligned with TRaSH Guide quality profiles. Ensures release scoring, preferred formats (HD Bluray + WEB for Radarr, WEB-1080p for Sonarr), and quality cutoffs stay tuned without digging through settings manually. Min custom format score set to -10000."
     },
     {
       "name": "Cloudflare Tunnel Management",
       "status": "active",
-      "description": "A Cloudflared container maintains persistent tunnels for all public subdomains including watch, photos, play, requests, status, auth, cloud, and office. When a new service needs to be exposed, a new tunnel entry is added in the Cloudflare dashboard — no firewall changes, no router config, no downtime."
+      "description": "A dedicated Cloudflared container maintains persistent tunnels for all public subdomains — completely isolated from application stacks so an ARR or Nextcloud restart never affects public access. Adding a new public service is a single tunnel entry in the Cloudflare dashboard with zero firewall or router changes."
     },
     {
-      "name": "Uptime Monitoring",
+      "name": "SSO Authentication (Authentik)",
       "status": "active",
-      "description": "Uptime Kuma checks every service at regular intervals and pushes alerts when something goes down. A public status page at status.gonzotech.us shows the live state of the whole stack — useful for sharing uptime with anyone who uses the services."
+      "description": "Authentik handles single sign-on across the entire stack — Jellyfin, Immich, Nextcloud, and Cloudflare Zero Trust all authenticate through auth.gonzotech.us. Google social login enabled. Admin roles assigned via Authentik groups, eliminating per-service account management."
     },
     {
-      "name": "Nextcloud Background Jobs",
+      "name": "Uptime Monitoring (Uptime Kuma)",
       "status": "active",
-      "description": "A scheduled cron job runs Nextcloud's background tasks every 5 minutes — keeping file indexing, calendar sync, and contact sync up to date across all connected devices without any manual intervention."
-    },
-    {
-      "name": "Vaultwarden",
-      "status": "planned",
-      "description": "Deploying a self-hosted Bitwarden instance to manage all family passwords securely on our own hardware.",
-      "benefit": "Eliminates reliance on browser-based password managers and keeps our credentials encrypted in our own vault."
+      "description": "Uptime Kuma checks every public service and internal Docker socket at regular intervals and sends alerts on failure. The public status page at status.gonzotech.us shows live health of the full stack — useful for sharing uptime with anyone who accesses the services."
     }
   ]
 }
